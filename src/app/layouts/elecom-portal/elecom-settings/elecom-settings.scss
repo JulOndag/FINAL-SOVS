@@ -109,7 +109,7 @@ $r: 10px;
         border-color: $blue-500;
         box-shadow: 0 0 0 3px rgba(59,110,240,0.1);
       }
-      &::placeholder { color: lighten($muted, 15%); }
+      &::placeholder { color: #a8b3cc; }
     }
   }
 }

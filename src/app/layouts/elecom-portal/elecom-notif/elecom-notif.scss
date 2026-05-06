@@ -71,10 +71,7 @@ $r: 10px;
   & + & { border-top: none; }
 
   &.unread { background: $blue-50; border-color: $blue-100; }
-  &:hover  { background: darken($blue-50, 1%); }
-
-  &:not(.unread):hover { background: #f8f9fc; }
-}
+    &:hover  { background: #e8effe; }}  
 
 .notif-icon {
   width: 32px; height: 32px; border-radius: 8px;
@@ -91,7 +88,7 @@ $r: 10px;
 .notif-body { flex: 1; }
 .notif-title { font-size: 13px; font-weight: 600; color: $text; }
 .notif-sub   { font-size: 12px; color: $muted; margin-top: 3px; line-height: 1.5; }
-.notif-time  { font-size: 11px; color: lighten($muted, 10%); margin-top: 5px; }
+.notif-time  { font-size: 11px; color: #9aa5c0; margin-top: 5px; }
 
 .notif-dot {
   width: 7px; height: 7px; border-radius: 50%;
