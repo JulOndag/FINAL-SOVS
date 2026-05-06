@@ -1,0 +1,364 @@
+// ── Design Tokens ─────────────────────────────────────────────
+$blue-900: #0d1f4e;
+$blue-800: #1a3370;
+$blue-700: #1e3fa0;
+$blue-600: #2952cc;
+$blue-500: #3b6ef0;
+$blue-400: #6b90f5;
+$blue-100: #e8eeff;
+$blue-50: #f0f4ff;
+
+$surface: #ffffff;
+$bg: #f5f7fc;
+$border: #e4e9f5;
+$text: #0d1f4e;
+$muted: #7a89b0;
+$danger: #e5534b;
+
+$sidebar-w: 220px;
+$topbar-h: 56px;
+$radius: 8px;
+
+// ── Reset helpers ──────────────────────────────────────────────
+* {
+  box-sizing: border-box;
+}
+
+// ── Login ──────────────────────────────────────────────────────
+.login-wrapper {
+  height: 100vh;
+  width: 100%;
+}
+
+// ── App Shell ─────────────────────────────────────────────────
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: $bg;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.login-wrapper {
+  height: 100vh;
+  width: 100%;
+}
+
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: #f4f6f9;
+}
+
+// ── Sidebar ───────────────────────────────────────────────────
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  height: 100vh;
+  background: #181824;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  z-index: 100;
+}
+
+.logo-section {
+  padding: 24px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 4px 0;
+  }
+
+  .logo-subtitle {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
+    margin: 0;
+  }
+}
+
+.menu {
+  list-style: none;
+  padding: 12px 0;
+  margin: 0;
+  flex: 1;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: #fff;
+    }
+
+    &.active {
+      background: rgba(34, 200, 76, 0.12);
+      color: #22c84c;
+      border-left-color: #22c84c;
+      font-weight: 600;
+    }
+  }
+}
+
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #22c84c;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .user-role {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
+  }
+}
+
+// ── Overlay ───────────────────────────────────────────────────
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 99;
+}
+
+// ── Main Content ──────────────────────────────────────────────
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ── Topbar ────────────────────────────────────────────────────
+.content-header {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  height: 64px;
+  background: #dadada;
+  border-bottom: 1px solid #e8eaed;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #444;
+  display: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+
+  &:hover {
+    background: #f4f6f9;
+  }
+}
+
+.header-left {
+  flex: 1;
+
+  h1.content-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+  }
+
+  p.content-subtitle {
+    font-size: 12px;
+    color: #888;
+    margin: 0;
+  }
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.notification-icon {
+  position: relative;
+  cursor: pointer;
+  color: #555;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: #1a1a2e;
+  }
+
+  .badge {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    background: #e53e3e;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.profile-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  position: relative;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #f4f6f9;
+  }
+
+  .profile-avatar-text {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #22c84c;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .profile-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .dropdown-icon {
+    font-size: 10px;
+    color: #888;
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    list-style: none;
+    padding: 6px 0;
+    min-width: 140px;
+    z-index: 200;
+
+    &.show {
+      display: block;
+    }
+
+    li {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+      border-left: none;
+      background: none;
+      font-weight: normal;
+
+      &:hover {
+        background: #f4f6f9;
+        color: #1a1a2e;
+      }
+    }
+  }
+}
+
+// ── Content Body ──────────────────────────────────────────────
+.content-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  background: #f4f6f9;
+}
+
+// ── Responsive ────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+
+    &.active {
+      transform: translateX(0);
+    }
+  }
+
+  .overlay {
+    display: block;
+  }
+}

@@ -1,29 +1,44 @@
 <div class="login-container">
+  <div class="ghost-text">VOTE</div>
+
+  <div class="OSVE">Online School Voting and Election</div>
+
+  <div class="left-panel">
+    <div class="vote-title">VOTE<br /><span>WISELY</span></div>
+    <div class="school-name">USTP Villanueva</div>
+    <blockquote>"The ballot is stronger than the bullet."<br />— Abraham Lincoln</blockquote>
+  </div>
+
   <div class="login-card">
     <div class="logo-container">
-      <img src="/logo.png" alt="Low.png" class="low.png" />
+      <img src="/logo.png" alt="USTP Logo" />
     </div>
 
     <h1>Online Voting and Election</h1>
     <p class="subtitle">Login to your account</p>
-    <div *ngIf="error" class="invalid-message">
-      {{ error }}
-    </div>
+
+    <div *ngIf="error" class="invalid-message">{{ error }}</div>
 
     <form (ngSubmit)="login()" #loginForm="ngForm">
       <div class="input-group">
-        <span class="icon">📧</span>
+        <svg viewBox="0 0 24 24">
+          <rect x="2" y="4" width="20" height="16" rx="2" />
+          <path d="M2 7l10 7 10-7" />
+        </svg>
         <input
           type="text"
           name="identifier"
           [(ngModel)]="identifier"
-          placeholder="Enter your email or Id"
+          placeholder="Enter your email or ID"
           required
         />
       </div>
 
       <div class="input-group">
-        <span class="icon">🔒</span>
+        <svg viewBox="0 0 24 24">
+          <rect x="5" y="11" width="14" height="10" rx="2" />
+          <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+        </svg>
         <input
           type="password"
           name="password"

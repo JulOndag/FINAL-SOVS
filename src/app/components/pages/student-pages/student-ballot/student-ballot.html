@@ -1,0 +1,97 @@
+<div class="ballot-page">
+
+  <!-- Header -->
+  <div class="ballot-header">
+    <div class="ballot-header-left">
+      <button class="back-btn" (click)="goBack()">
+        <svg viewBox="0 0 18 18" fill="none" width="14" height="14"><path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </button>
+      <div>
+        <h1>{{ election?.name || 'Ballot' }}</h1>
+        <p class="ballot-sub">{{ election?.startDate }} — {{ election?.endDate }} · Select one candidate per position</p>
+      </div>
+    </div>
+    <div class="ballot-progress">
+      <span class="progress-label">{{ answeredCount }} of {{ totalPositions }} positions filled</span>
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="progressPercent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="ballot-loading" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading ballot…</p>
+  </div>
+
+  <!-- Already voted -->
+  <div class="already-voted" *ngIf="!loading && hasVoted">
+    <svg viewBox="0 0 24 24" fill="none" width="40" height="40"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h3>You've already voted</h3>
+    <p>Your ballot has been submitted. Thank you for participating!</p>
+    <button class="btn-secondary" (click)="goToResults()">View Results</button>
+  </div>
+
+  <!-- Ballot positions -->
+  <div class="positions-list" *ngIf="!loading && !hasVoted">
+    <div class="position-card" *ngFor="let position of positions; let i = index">
+      <div class="position-head">
+        <div class="position-num">{{ i + 1 }}</div>
+        <div>
+          <div class="position-name">{{ position.name }}</div>
+          <div class="position-meta">Vote for 1 · {{ position.candidates.length }} candidates</div>
+        </div>
+        <div class="position-status" [ngClass]="votes[position.name] ? 'filled' : 'empty'">
+          {{ votes[position.name] ? 'Selected' : 'Required' }}
+        </div>
+      </div>
+
+      <div class="candidates-grid">
+        <div
+          class="candidate-card"
+          *ngFor="let c of position.candidates"
+          [ngClass]="{ selected: votes[position.name] === c.id }"
+          (click)="selectCandidate(position.name, c.id)">
+          <div class="candidate-avatar">{{ getInitials(c.name) }}</div>
+          <div class="candidate-info">
+            <div class="candidate-name">{{ c.name }}</div>
+            <div class="candidate-party">{{ c.party }}</div>
+          </div>
+          <div class="select-indicator">
+            <svg *ngIf="votes[position.name] === c.id" viewBox="0 0 16 16" fill="none" width="14" height="14">
+              <circle cx="8" cy="8" r="7" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <svg *ngIf="votes[position.name] !== c.id" viewBox="0 0 16 16" fill="none" width="14" height="14">
+              <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit footer -->
+  <div class="ballot-footer" *ngIf="!loading && !hasVoted">
+    <div class="footer-note" *ngIf="answeredCount < totalPositions">
+      <svg viewBox="0 0 18 18" fill="none" width="14" height="14"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M9 5v4M9 12v.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      {{ totalPositions - answeredCount }} position{{ totalPositions - answeredCount !== 1 ? 's' : '' }} still need a selection
+    </div>
+    <div class="footer-note complete" *ngIf="answeredCount === totalPositions">
+      <svg viewBox="0 0 18 18" fill="none" width="14" height="14"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      All positions filled — ready to submit
+    </div>
+    <div class="footer-actions">
+      <button class="btn-secondary" (click)="goBack()">Cancel</button>
+      <button
+        class="btn-submit"
+        [disabled]="answeredCount < totalPositions || submitting"
+        (click)="submitBallot()">
+        {{ submitting ? 'Submitting…' : 'Submit Ballot' }}
+      </button>
+    </div>
+  </div>
+
+</div>

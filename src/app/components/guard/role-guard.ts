@@ -8,15 +8,31 @@ export class RoleGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userStr = localStorage.getItem('user');
+    
+    // No user in storage at all
+    if (!userStr) {
+      this.router.navigate(['/login']);
+      return false;
+    }
+
+    const user = JSON.parse(userStr);
     const requiredRole = route.data['role'];
 
     if (user.role === requiredRole) {
       return true;
     }
 
-    // redirect if not allowed
-    this.router.navigate(['/home']);
+    if (user.role === 'admin') {
+      this.router.navigate(['/app/admin-dashboard']);
+    } else if (user.role === 'elecom') {
+      this.router.navigate(['/app/elecom-dashboard']);
+    } else if (user.role === 'student') {
+      this.router.navigate(['/app/student-dashboard']);
+    } else {
+      this.router.navigate(['/login']);
+    }
+
     return false;
   }
 }

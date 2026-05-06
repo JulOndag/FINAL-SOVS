@@ -1,1 +1,104 @@
-<p>student-dashboard works!</p>
+<div class="dashboard-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Welcome back, {{ auth.getCurrentUser()?.name || 'Student' }}</h1>
+      <p class="page-sub">{{ auth.getCurrentUser()?.email }} · Student Portal</p>
+    </div>
+  </div>
+
+  <!-- Status banner -->
+  <div class="status-banner" [ngClass]="isRegistered ? 'banner-green' : 'banner-amber'">
+    <div class="banner-icon">
+      <svg *ngIf="isRegistered" viewBox="0 0 20 20" fill="none" width="18" height="18"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg *ngIf="!isRegistered" viewBox="0 0 20 20" fill="none" width="18" height="18"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v5M10 13v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <div class="banner-title" *ngIf="isRegistered">You are registered to vote</div>
+      <div class="banner-title" *ngIf="!isRegistered">Not yet registered</div>
+      <div class="banner-sub" *ngIf="isRegistered && !hasVoted">Your student ID is verified. You can vote in active elections below.</div>
+      <div class="banner-sub" *ngIf="isRegistered && hasVoted">You have already cast your vote. Thank you for participating!</div>
+      <div class="banner-sub" *ngIf="!isRegistered">Please contact the Electoral Commission to register as a voter.</div>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Active elections</div>
+      <div class="stat-value">{{ activeElections.length }}</div>
+      <div class="stat-sub">open for voting</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Upcoming elections</div>
+      <div class="stat-value">{{ upcomingElections.length }}</div>
+      <div class="stat-sub">scheduled</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Voting status</div>
+      <div class="stat-value status-val" [ngClass]="hasVoted ? 'voted' : 'not-voted'">
+        {{ hasVoted ? 'Voted' : 'Pending' }}
+      </div>
+      <div class="stat-sub">this election</div>
+    </div>
+    <div class="stat-card" (click)="goToApply()" style="cursor:pointer">
+      <div class="stat-label">My application</div>
+      <div class="stat-value app-val" [ngClass]="application?.status || 'none'">
+        {{ application ? application.status : 'None' }}
+      </div>
+      <div class="stat-sub">candidacy status</div>
+    </div>
+  </div>
+
+  <!-- Active elections -->
+  <div class="section" *ngIf="!loading">
+    <div class="section-head">
+      <h2>Active elections</h2>
+      <button class="link-btn" (click)="goToElections()">View all</button>
+    </div>
+
+    <div class="empty-state" *ngIf="activeElections.length === 0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="36" height="36"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <p>No active elections right now.</p>
+    </div>
+
+    <div class="election-list">
+      <div class="election-card" *ngFor="let e of activeElections">
+        <div class="ec-left">
+          <div class="ec-dot"></div>
+          <div>
+            <div class="ec-name">{{ e.name }}</div>
+            <div class="ec-meta">{{ e.startDate }} — {{ e.endDate }} · {{ e.totalPositions }} positions</div>
+          </div>
+        </div>
+        <button
+          class="vote-btn"
+          [ngClass]="hasVoted ? 'voted' : 'active'"
+          [disabled]="hasVoted || !isRegistered"
+          (click)="goToVote(e)">
+          {{ hasVoted ? 'Voted' : 'Vote Now' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="section">
+    <div class="section-head"><h2>Quick actions</h2></div>
+    <div class="actions-grid">
+      <div class="action-card" (click)="goToElections()">
+        <svg viewBox="0 0 18 18" fill="none" width="20" height="20"><path d="M3 4h12M3 9h12M3 14h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>Browse Elections</span>
+      </div>
+      <div class="action-card" (click)="goToApply()">
+        <svg viewBox="0 0 18 18" fill="none" width="20" height="20"><rect x="3" y="2" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M6 6h6M6 9h6M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>Run for Office</span>
+      </div>
+      <div class="action-card" (click)="goToResults()">
+        <svg viewBox="0 0 18 18" fill="none" width="20" height="20"><rect x="2" y="10" width="4" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="7" y="6" width="4" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="12" y="2" width="4" height="14" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+        <span>View Results</span>
+      </div>
+    </div>
+  </div>
+
+</div>

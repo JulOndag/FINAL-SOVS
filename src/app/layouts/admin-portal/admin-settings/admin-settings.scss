@@ -1,0 +1,391 @@
+$navy: #0f172a;
+$navy-mid: #1e293b;
+$navy-light: #334155;
+$gold: #f59e0b;
+$slate: #94a3b8;
+$white: #f8fafc;
+$danger: #ef4444;
+$success: #22c55e;
+$info: #3b82f6;
+$border: #e2e8f0;
+
+.admin-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  padding: 2rem;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  background: #f1f5f9;
+  min-height: 100%;
+}
+
+.page-header {
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $navy;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+  .page-subtitle {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    color: $slate;
+  }
+}
+
+// -- Layout
+.settings-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// -- Sidebar Nav
+.settings-nav {
+  background: #fff;
+  border-radius: 14px;
+  border: 1.5px solid $border;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  @media (max-width: 700px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 9px;
+    border: none;
+    background: transparent;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $navy-light;
+    cursor: pointer;
+    transition:
+      background 0.15s,
+      color 0.15s;
+    text-align: left;
+    width: 100%;
+
+    &:hover {
+      background: #f8fafc;
+      color: $navy;
+    }
+
+    &.active {
+      background: $navy;
+      color: $white;
+
+      .nav-icon svg {
+        stroke: $gold;
+      }
+    }
+
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+// -- Content Panel
+.settings-content {
+  background: #fff;
+  border-radius: 14px;
+  border: 1.5px solid $border;
+  padding: 2rem;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section-header {
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $navy;
+    margin: 0 0 0.3rem;
+  }
+  p {
+    font-size: 0.85rem;
+    color: $slate;
+    margin: 0;
+  }
+}
+
+// -- Form
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    &.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: $navy-light;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.form-input {
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid $border;
+  border-radius: 9px;
+  font-size: 0.875rem;
+  color: $navy;
+  background: #f8fafc;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+
+  &:focus {
+    border-color: $navy;
+    background: #fff;
+  }
+
+  &::placeholder {
+    color: $slate;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
+  border-top: 1.5px solid #f1f5f9;
+}
+
+.btn-save {
+  padding: 0.55rem 1.4rem;
+  background: $navy;
+  color: $white;
+  border: none;
+  border-radius: 9px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: $navy-light;
+  }
+}
+
+// -- Toggle Group
+.toggle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1.5px solid $border;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid $border;
+  gap: 1rem;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .toggle-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    .toggle-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $navy;
+    }
+
+    .toggle-desc {
+      font-size: 0.8rem;
+      color: $slate;
+    }
+  }
+}
+
+// -- Toggle Switch
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #e2e8f0;
+    border-radius: 9999px;
+    transition: background 0.25s;
+
+    &::before {
+      content: '';
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.25s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  input:checked + .slider {
+    background: $navy;
+    &::before {
+      transform: translateX(20px);
+    }
+  }
+}
+
+// -- Access List
+.access-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1.5px solid $border;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.access-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid $border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .access-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: $navy-mid;
+    color: $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .access-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .access-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $navy;
+    }
+    .access-email {
+      font-size: 0.78rem;
+      color: $slate;
+    }
+  }
+
+  .access-role-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+
+    &.role-superadmin {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    &.role-admin {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    &.role-readonly {
+      background: #f1f5f9;
+      color: $navy-light;
+    }
+  }
+
+  .btn-revoke {
+    padding: 0.3rem 0.7rem;
+    background: #fee2e2;
+    color: $danger;
+    border: none;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #fecaca;
+    }
+  }
+}
+
+.invite-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+
+  .form-input {
+    flex: 1;
+  }
+}

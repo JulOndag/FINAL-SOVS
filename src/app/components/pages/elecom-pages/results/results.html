@@ -1,0 +1,76 @@
+<div class="results-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Election Results</h1>
+      <p class="page-sub">Live vote tally per position</p>
+    </div>
+    <div class="total-votes-pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Total Votes Cast: <strong>{{ totalVotes }}</strong>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading">Loading results...</div>
+
+  <!-- No Results -->
+  <div class="empty-state" *ngIf="!loading && resultsByPosition.length === 0">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="10" width="4" height="10" rx="1"/><rect x="9" y="6" width="4" height="14" rx="1"/><rect x="16" y="2" width="4" height="18" rx="1"/></svg>
+    <h3>No results yet</h3>
+    <p>Results will appear here once the election ends and votes are tallied.</p>
+  </div>
+
+  <!-- Results by Position -->
+  <div class="positions-list" *ngIf="!loading">
+    <div class="position-block" *ngFor="let group of resultsByPosition">
+
+      <div class="position-header">
+        <h2>{{ group.position }}</h2>
+        <span class="total-label">{{ group.totalVotes }} votes</span>
+      </div>
+
+      <div class="candidates-list">
+        <div class="result-card" *ngFor="let c of group.candidates; let i = index"
+             [ngClass]="{ 'winner': isWinner(c, group), 'runner-up': i === 1 }">
+
+          <div class="rank">
+            <svg *ngIf="isWinner(c, group)" width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span *ngIf="!isWinner(c, group)">{{ i + 1 }}</span>
+          </div>
+
+          <div class="avatar">
+            <img *ngIf="c.photo" [src]="c.photo" [alt]="c.name" />
+            <span *ngIf="!c.photo">{{ c.name.charAt(0) }}</span>
+          </div>
+
+          <div class="candidate-info">
+            <div class="cname">
+              {{ c.name }}
+              <span class="winner-badge" *ngIf="isWinner(c, group)">Winner</span>
+            </div>
+            <div class="cmeta">{{ c.party || c.course }} · {{ c.year }}</div>
+            <div class="vote-bar-wrap">
+              <div class="vote-bar">
+                <div class="vote-fill"
+                     [style.width.%]="getPercentage(c.votes, group.totalVotes)"
+                     [ngClass]="isWinner(c, group) ? 'fill-winner' : 'fill-default'">
+                </div>
+              </div>
+              <span class="vote-pct">{{ getPercentage(c.votes, group.totalVotes) }}%</span>
+            </div>
+          </div>
+
+          <div class="vote-count">
+            <div class="count">{{ c.votes }}</div>
+            <div class="count-label">votes</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

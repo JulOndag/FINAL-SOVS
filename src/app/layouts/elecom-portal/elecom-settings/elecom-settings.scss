@@ -1,0 +1,177 @@
+$blue-900: #0d1f4e;
+$blue-700: #1e3fa0;
+$blue-600: #2952cc;
+$blue-500: #3b6ef0;
+$blue-100: #e8eeff;
+$blue-50:  #f0f4ff;
+$surface:  #ffffff;
+$bg:       #f4f6fb;
+$border:   #e4e9f5;
+$text:     #0d1f4e;
+$muted:    #7a89b0;
+$r: 10px;
+
+.settings-page {
+  display: flex; flex-direction: column; gap: 20px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.page-header {
+  h1 { font-size: 20px; font-weight: 650; color: $text; margin: 0 0 3px; letter-spacing: -0.01em; }
+  .page-sub { font-size: 12.5px; color: $muted; margin: 0; }
+}
+
+// ── Layout ────────────────────────────────────────────────────
+.settings-layout {
+  display: grid;
+  grid-template-columns: 176px 1fr;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+// ── Nav ───────────────────────────────────────────────────────
+.settings-nav {
+  display: flex; flex-direction: column; gap: 2px;
+  background: $surface; border: 1px solid $border;
+  border-radius: $r; padding: 8px;
+}
+
+.snav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 11px; border-radius: 7px;
+  font-size: 13px; font-weight: 500; color: $muted;
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; transition: background 0.13s, color 0.13s;
+  text-align: left;
+
+  svg { opacity: 0.65; flex-shrink: 0; transition: opacity 0.13s; }
+
+  &:hover { background: $blue-50; color: $blue-700; svg { opacity: 1; } }
+  &.active { background: $blue-600; color: #fff; svg { opacity: 1; } }
+}
+
+// ── Panel ─────────────────────────────────────────────────────
+.panel {
+  background: $surface; border: 1px solid $border;
+  border-radius: $r; overflow: hidden;
+}
+
+.panel-head {
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid $border;
+  background: $bg;
+
+  h2 { font-size: 14px; font-weight: 650; color: $text; margin: 0 0 3px; }
+  p  { font-size: 12px; color: $muted; margin: 0; }
+}
+
+// ── Avatar Row ────────────────────────────────────────────────
+.avatar-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 22px; border-bottom: 1px solid $border;
+}
+
+.big-avatar {
+  width: 48px; height: 48px; border-radius: 10px;
+  background: $blue-600; color: #fff;
+  font-size: 20px; font-weight: 650;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; letter-spacing: 0.02em;
+}
+
+.avatar-name { font-size: 14px; font-weight: 600; color: $text; }
+.avatar-role { font-size: 12px; color: $muted; margin-top: 2px; }
+
+// ── Field Grid ────────────────────────────────────────────────
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 20px 22px;
+
+  .field-group {
+    display: flex; flex-direction: column; gap: 5px;
+
+    &.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 11.5px; font-weight: 500; color: $muted;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+
+    input {
+      padding: 8px 11px; border-radius: 7px;
+      border: 1px solid $border; font-size: 13px;
+      color: $text; background: $surface; outline: none;
+      font-family: inherit; transition: border-color 0.14s, box-shadow 0.14s;
+
+      &:focus {
+        border-color: $blue-500;
+        box-shadow: 0 0 0 3px rgba(59,110,240,0.1);
+      }
+      &::placeholder { color: lighten($muted, 15%); }
+    }
+  }
+}
+
+// ── Toggle Row ────────────────────────────────────────────────
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 22px; border-top: 1px solid $border;
+
+  .toggle-info { flex: 1; }
+  .toggle-label { font-size: 13px; font-weight: 500; color: $text; }
+  .toggle-sub   { font-size: 12px; color: $muted; margin-top: 2px; }
+}
+
+.toggle-switch {
+  position: relative; display: inline-flex; align-items: center;
+  cursor: pointer; flex-shrink: 0;
+
+  input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+  .slider {
+    display: block;
+    width: 38px; height: 22px; border-radius: 11px;
+    background: $border; transition: background 0.2s;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+  }
+
+  input:checked + .slider {
+    background: $blue-600;
+    &::after { transform: translateX(16px); }
+  }
+}
+
+// ── Panel Footer ──────────────────────────────────────────────
+.panel-foot {
+  display: flex; justify-content: flex-end;
+  padding: 14px 22px;
+  border-top: 1px solid $border;
+  background: $bg;
+}
+
+.btn-save {
+  background: $blue-600; color: #fff; border: none;
+  padding: 9px 22px; border-radius: 7px;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  font-family: inherit; transition: background 0.14s;
+  &:hover { background: $blue-700; }
+}
+
+@media (max-width: 640px) {
+  .settings-layout { grid-template-columns: 1fr; }
+  .settings-nav { flex-direction: row; overflow-x: auto; }
+  .field-grid { grid-template-columns: 1fr; }
+}

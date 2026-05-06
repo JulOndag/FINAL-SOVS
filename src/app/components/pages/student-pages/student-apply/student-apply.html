@@ -1,0 +1,90 @@
+<div class="apply-page">
+
+  <!-- HEADER -->
+  <div class="apply-header">
+    <h1>Apply as Candidate</h1>
+    <p>Fill out the form to submit your candidacy</p>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="apply-card">
+
+    <!-- BASIC INFO -->
+    <div class="section">
+      <h3>Basic Information</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input [(ngModel)]="form.name" placeholder="Enter full name">
+        </div>
+
+        <div class="form-group">
+          <label>Party</label>
+          <select [(ngModel)]="form.party">
+            <option [ngValue]="null" disabled>Select Party</option>
+            <option *ngFor="let p of parties" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Position *</label>
+          <select [(ngModel)]="form.position">
+            <option [ngValue]="null" disabled>Select Position</option>
+            <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Course *</label>
+          <select [(ngModel)]="form.course">
+            <option [ngValue]="null" disabled>Select Course</option>
+            <option *ngFor="let c of courses" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Year Level</label>
+        <select [(ngModel)]="form.year">
+          <option [ngValue]="null" disabled>Select Year</option>
+          <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- BIO -->
+    <div class="section">
+      <h3>Platform / Bio</h3>
+
+      <textarea [(ngModel)]="form.bio" rows="4"
+        placeholder="Write your platform, goals, or background..."></textarea>
+    </div>
+
+    <!-- REQUIREMENTS -->
+    <div class="section">
+      <h3>Requirements Checklist</h3>
+
+      <div class="req-grid">
+        <label><input type="checkbox" [(ngModel)]="form.requirements.enrollment"> Enrollment Certificate</label>
+        <label><input type="checkbox" [(ngModel)]="form.requirements.goodMoral"> Good Moral</label>
+        <label><input type="checkbox" [(ngModel)]="form.requirements.residency"> Residency</label>
+        <label><input type="checkbox" [(ngModel)]="form.requirements.coc"> Certificate of Candidacy</label>
+        <label><input type="checkbox" [(ngModel)]="form.requirements.noViolations"> No Violations</label>
+        <label><input type="checkbox" [(ngModel)]="form.requirements.noFailingGrades"> No Failing Grades</label>
+      </div>
+    </div>
+
+    <!-- ACTION -->
+    <div class="form-actions">
+      <button class="btn-submit" (click)="submitApplication()">
+        Submit Application
+      </button>
+    </div>
+
+  </div>
+
+</div>
