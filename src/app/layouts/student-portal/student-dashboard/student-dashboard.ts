@@ -58,15 +58,15 @@ export class StudentDashboard implements OnInit {
   }
 
   goToVote(election: Election): void {
-    this.router.navigate(['/student-ballot', election.id]);
+    this.router.navigate(['/app/student-ballot', election.id]);
   }
   goToElections(): void {
-    this.router.navigate(['/student-elections']);
+    this.router.navigate(['/app/student-elections']);
   }
   goToApply(): void {
-    this.router.navigate(['/student-apply']);
+    this.router.navigate(['/app/student-apply']);
   }
   goToResults(): void {
-    this.router.navigate(['/student-results']);
+    this.router.navigate(['/app/student-results']);
   }
 }

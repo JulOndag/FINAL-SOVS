@@ -11,6 +11,11 @@ import { FormsModule } from '@angular/forms';
 })
 export class StudentApply {
 
+  Math = Math;
+
+  currentStep = 1;
+  submittedData: any = null;
+
   parties: string[] = [
     'UNITY',
     'PROGRESSIVE ALLIANCE',
@@ -26,14 +31,16 @@ export class StudentApply {
     'Vice President',
     'Secretary',
     'Treasurer',
-    'Auditor'
+    'Auditor',
+    'PRO / PIO',
+    'Senator'
   ];
 
-  years: number[] = [1, 2, 3];
+  years: number[] = [1, 2, 3, 4];
 
-  form: any = this.resetForm();
+  form: any = this.blankForm();
 
-  resetForm() {
+  blankForm() {
     return {
       name: '',
       party: null,
@@ -53,14 +60,37 @@ export class StudentApply {
     };
   }
 
-  submitApplication() {
+  getInitial(name: string): string {
+    return name ? name.charAt(0).toUpperCase() : '?';
+  }
+
+  reqCount(): number {
+    return Object.values(this.form.requirements).filter(Boolean).length;
+  }
+
+  nextStep(): void {
+    if (this.currentStep < 3) this.currentStep++;
+  }
+
+  prevStep(): void {
+    if (this.currentStep > 1) this.currentStep--;
+  }
+
+  submitApplication(): void {
     if (!this.form.name || !this.form.position || !this.form.course) {
-      alert('Please fill required fields');
+      alert('Please fill in all required fields.');
       return;
     }
 
-    console.log(this.form);
-    alert('Application submitted!');
-    this.form = this.resetForm();
+    // Snapshot the form data for the confirmation step
+    this.submittedData = {
+      ...this.form,
+      reqCount: this.reqCount()
+    };
+
+    console.log('Application submitted:', this.submittedData);
+
+    // Advance to Step 4 — the locked confirmation step
+    this.currentStep = 4;
   }
 }

@@ -1,217 +1,799 @@
-// ── Tokens ────────────────────────────────────────────────────
-$blue-900: #0d1f4e;
-$blue-700: #1e3fa0;
-$blue-600: #2952cc;
-$blue-500: #3b6ef0;
-$blue-100: #e8eeff;
-$blue-50:  #f0f4ff;
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap');
 
-$surface:  #ffffff;
-$bg:       #f5f7fc;
-$border:   #e4e9f5;
-$text:     #0d1f4e;
-$muted:    #7a89b0;
-$muted-light: #a8b3cc; // replaces lighten($muted, 15%)
-$r:        8px;
+// ── Host element ───────────────────────────────────────────────
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+}
 
-// ── Page ──────────────────────────────────────────────────────
+// ── Design Tokens ──────────────────────────────────────────────
+$ink:        #111318;
+$ink-2:      #4a4f5e;
+$ink-3:      #8a909f;
+$ink-4:      #c4c8d2;
+$surface:    #ffffff;
+$surface-2:  #f5f6f8;
+$surface-3:  #eef0f4;
+$accent:     #1a4cff;
+$accent-dim: rgba(26, 76, 255, 0.08);
+$accent-mid: rgba(26, 76, 255, 0.18);
+$success:    #16a34a;
+$success-bg: #f0fdf4;
+$success-bd: #bbf7d0;
+$warn-bg:    #fffbeb;
+$warn-bd:    #fde68a;
+$warn-text:  #92400e;
+$border:     rgba(0, 0, 0, 0.08);
+$border-md:  rgba(0, 0, 0, 0.12);
+$radius:     12px;
+$radius-sm:  8px;
+$radius-lg:  16px;
+
+// ── Base ───────────────────────────────────────────────────────
 .apply-page {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  max-width: 780px;
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  padding: 36px 48px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  color: $ink;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-// ── Header ────────────────────────────────────────────────────
+// ── Orbs (kept, subtler) ───────────────────────────────────────
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.3;
+}
+.orb-1 {
+  width: 480px; height: 480px;
+  background: radial-gradient(circle, #c7d4ff, transparent);
+  top: -140px; right: -140px;
+}
+.orb-2 {
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, #c7f3e0, transparent);
+  bottom: -80px; left: -100px;
+}
+
+// ── Header ─────────────────────────────────────────────────────
 .apply-header {
-  h1 {
-    font-size: 18px;
-    font-weight: 600;
-    color: $text;
-    margin: 0 0 3px;
-    letter-spacing: -0.01em;
-  }
-
-  p {
-    font-size: 12.5px;
-    color: $muted;
-    margin: 0;
-  }
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
 }
 
-// ── Card ──────────────────────────────────────────────────────
-.apply-card {
+.header-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $accent;
+  margin-bottom: 12px;
+}
+
+.eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: $accent;
+  animation: blink 2.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(1.5); }
+}
+
+.apply-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: $ink;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.apply-header p {
+  font-size: 14px;
+  color: $ink-2;
+  margin: 0;
+  line-height: 1.65;
+  max-width: 400px;
+  font-weight: 300;
+}
+
+// ── Steps Bar ─────────────────────────────────────────────────
+.steps-bar {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  padding: 14px 18px;
   background: $surface;
   border: 1px solid $border;
-  border-radius: $r;
+  border-radius: $radius;
+  max-width: 860px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.step-circle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid $border-md;
+  background: $surface-2;
+  color: $ink-3;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  
+  svg { color: inherit; }
+}
+
+.step.active .step-circle {
+  border-color: $accent;
+  background: $accent;
+  color: #fff;
+  box-shadow: 0 0 0 4px $accent-dim;
+}
+
+.step.done .step-circle {
+  border-color: $success;
+  background: $success;
+  color: #fff;
+}
+
+.step-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: $ink-4;
+  transition: color 0.2s;
+}
+.step.active .step-label { color: $ink; }
+.step.done  .step-label  { color: $success; }
+
+.step-line {
+  flex: 1;
+  height: 1.5px;
+  background: $border;
+  margin: 0 10px;
+  border-radius: 1px;
+  transition: background 0.3s;
+
+  &.active { background: $success; }
+}
+
+// ── Form Card ─────────────────────────────────────────────────
+.form-card {
+  position: relative;
+  z-index: 1;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
   overflow: hidden;
+  max-width: 860px;
+  animation: rise 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-// ── Sections inside card ──────────────────────────────────────
-.section {
-  padding: 20px 22px;
-
-  & + .section {
-    border-top: 1px solid $border;
-  }
-
-  h3 {
-    font-size: 13px;
-    font-weight: 600;
-    color: $text;
-    margin: 0 0 14px;
-    letter-spacing: 0.01em;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-
-    &::before {
-      content: '';
-      display: inline-block;
-      width: 3px;
-      height: 14px;
-      background: $blue-600;
-      border-radius: 2px;
-    }
-  }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-// ── Form Layout ───────────────────────────────────────────────
-.form-row {
+// Card Header
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 24px;
+  border-bottom: 1px solid $border;
+  background: $surface-2;
+}
+
+.card-icon {
+  width: 40px; height: 40px;
+  border-radius: $radius-sm;
+  background: $surface;
+  border: 1px solid $border;
+  color: $accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-header h2 {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: $ink;
+  margin: 0 0 3px;
+}
+
+.card-header p {
+  font-size: 12.5px;
+  color: $ink-3;
+  margin: 0;
+}
+
+// Fields
+.fields {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field-row {
   display: flex;
   gap: 14px;
-  margin-bottom: 14px;
-
-  &:last-child { margin-bottom: 0; }
 }
 
-.form-group {
+.field {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-bottom: 14px;
-
-  &:last-child { margin-bottom: 0; }
-
-  label {
-    font-size: 12px;
-    font-weight: 500;
-    color: $muted;
-    letter-spacing: 0.02em;
-  }
-
-  input,
-  select {
-    padding: 8px 11px;
-    border-radius: 6px;
-    border: 1px solid $border;
-    font-size: 13px;
-    color: $text;
-    background: $surface;
-    transition: border-color 0.15s, box-shadow 0.15s;
-    outline: none;
-    font-family: inherit;
-    appearance: none;
-
-    &:focus {
-      border-color: $blue-500;
-      box-shadow: 0 0 0 3px rgba(59, 110, 240, 0.12);
-    }
-
-    &::placeholder { color: $muted-light; }
-  }
-
-  select {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237a89b0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 10px;
-    padding-right: 28px;
-    cursor: pointer;
-  }
+  gap: 6px;
 }
 
-// ── Textarea ──────────────────────────────────────────────────
-textarea {
-  width: 100%;
-  padding: 9px 11px;
-  border-radius: 6px;
-  border: 1px solid $border;
-  font-size: 13px;
-  color: $text;
-  font-family: inherit;
-  resize: vertical;
+.field-sm { max-width: 200px; }
+
+.field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: $ink-2;
+  letter-spacing: 0.015em;
+}
+
+.req { color: #ef4444; margin-left: 2px; }
+
+.field input,
+.field select {
+  padding: 9px 12px;
+  border-radius: $radius-sm;
+  border: 1.5px solid $border-md;
+  font-size: 13.5px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color: $ink;
+  background: $surface;
   outline: none;
+  appearance: none;
   transition: border-color 0.15s, box-shadow 0.15s;
-  line-height: 1.6;
+
+  &::placeholder { color: $ink-4; }
+
+  &:hover { border-color: darken($border-md, 10%); }
 
   &:focus {
-    border-color: $blue-500;
-    box-shadow: 0 0 0 3px rgba(59, 110, 240, 0.12);
+    border-color: $accent;
+    box-shadow: 0 0 0 3px $accent-dim;
+    background: $surface;
   }
-
-  &::placeholder { color: $muted-light; }
 }
 
-// ── Requirements Checklist ────────────────────────────────────
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a909f' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+  padding-right: 34px;
+  cursor: pointer;
+}
+
+// Textarea
+.textarea-wrap {
+  position: relative;
+
+  textarea {
+    width: 100%;
+    padding: 11px 13px;
+    border-radius: $radius-sm;
+    border: 1.5px solid $border-md;
+    font-size: 13.5px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    color: $ink;
+    resize: vertical;
+    outline: none;
+    line-height: 1.65;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+
+    &::placeholder { color: $ink-4; }
+    &:focus {
+      border-color: $accent;
+      box-shadow: 0 0 0 3px $accent-dim;
+    }
+  }
+}
+
+.char-count {
+  position: absolute;
+  bottom: 10px; right: 12px;
+  font-size: 11px;
+  color: $ink-4;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+
+// Preview Card
+.preview-card {
+  border: 1.5px solid $border;
+  border-radius: $radius-sm;
+  overflow: hidden;
+  background: $surface-2;
+}
+
+.preview-label {
+  padding: 6px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $ink-3;
+  border-bottom: 1px solid $border;
+}
+
+.preview-body {
+  display: flex;
+  gap: 13px;
+  padding: 14px;
+}
+
+.preview-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: $accent;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.preview-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: $ink;
+}
+
+.preview-pos {
+  font-size: 12px;
+  color: $accent;
+  font-weight: 500;
+  margin: 2px 0 6px;
+}
+
+.preview-bio {
+  font-size: 12px;
+  color: $ink-3;
+  line-height: 1.55;
+}
+
+// Requirements Progress
+.req-progress {
+  background: $surface-2;
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  padding: 12px 16px;
+}
+
+.req-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: $ink-3;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.req-pct {
+  font-weight: 600;
+  color: $ink-3;
+  transition: color 0.2s;
+  font-variant-numeric: tabular-nums;
+
+  &.complete { color: $success; }
+}
+
+.req-bar-track {
+  height: 5px;
+  background: $surface-3;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.req-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, $accent 0%, $success 100%);
+  border-radius: 3px;
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+// Requirement grid items
 .req-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 
-  label {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 13px;
-    color: $text;
-    padding: 9px 12px;
-    border-radius: 6px;
-    border: 1px solid $border;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-    user-select: none;
+.req-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 13px;
+  border-radius: $radius-sm;
+  border: 1.5px solid $border;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: $surface;
+  user-select: none;
 
-    &:hover {
-      background: $blue-50;
-      border-color: $blue-100;
-    }
+  &:hover { border-color: $accent-mid; background: $accent-dim; }
 
-    input[type="checkbox"] {
-      width: 15px;
-      height: 15px;
-      border-radius: 3px;
-      accent-color: $blue-600;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
+  &.checked {
+    border-color: $success-bd;
+    background: $success-bg;
   }
 }
 
-// ── Form Actions ──────────────────────────────────────────────
-.form-actions {
+.req-checkbox {
+  position: relative;
+  flex-shrink: 0;
+
+  input[type='checkbox'] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+}
+
+.custom-check {
+  width: 18px; height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid $border-md;
+  background: $surface;
   display: flex;
-  justify-content: flex-end;
-  padding: 16px 22px;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  color: #fff;
+}
+
+.req-item.checked .custom-check {
+  background: $success;
+  border-color: $success;
+}
+
+.req-name {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: $ink;
+}
+
+.req-desc {
+  display: block;
+  font-size: 11px;
+  color: $ink-3;
+  margin-top: 1px;
+}
+
+// Notice
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 11px 14px;
+  background: $warn-bg;
+  border: 1px solid $warn-bd;
+  border-radius: $radius-sm;
+  font-size: 12.5px;
+  color: $warn-text;
+  line-height: 1.55;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: #d97706;
+  }
+}
+
+// Card Footer
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
   border-top: 1px solid $border;
-  background: $bg;
+  background: $surface-2;
+}
+
+// Buttons
+%btn-base {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: $radius-sm;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  letter-spacing: 0.01em;
+}
+
+.btn-back {
+  @extend %btn-base;
+  background: $surface;
+  border: 1.5px solid $border-md;
+  color: $ink-2;
+
+  &:hover {
+    background: $surface-3;
+    border-color: darken($border-md, 8%);
+    color: $ink;
+  }
+}
+
+.btn-next {
+  @extend %btn-base;
+  background: $ink;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: lighten($ink, 10%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  }
+
+  &:disabled {
+    opacity: 0.32;
+    cursor: not-allowed;
+    transform: none;
+  }
 }
 
 .btn-submit {
-  background: $blue-600;
+  @extend %btn-base;
+  background: $accent;
   color: #fff;
-  border: none;
-  padding: 9px 22px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: inherit;
-  letter-spacing: 0.01em;
-  transition: background 0.15s;
+  box-shadow: 0 4px 16px rgba(26, 76, 255, 0.28);
 
-  &:hover { background: $blue-700; }
-  &:active { background: $blue-900; }
+  &:hover {
+    background: darken($accent, 8%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(26, 76, 255, 0.38);
+  }
+}
+
+// ── Success State ─────────────────────────────────────────────
+.success-card {
+  position: relative;
+  z-index: 1;
+  background: $surface;
+  border: 1px solid $success-bd;
+  border-radius: $radius-lg;
+  padding: 48px 32px;
+  text-align: center;
+  max-width: 860px;
+  animation: rise 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.success-icon {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: $success-bg;
+  border: 1.5px solid $success-bd;
+  color: $success;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.success-card h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: $ink;
+  margin: 0 0 10px;
+}
+
+.success-card p {
+  font-size: 13.5px;
+  color: $ink-2;
+  margin: 0 auto 24px;
+  max-width: 380px;
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+.success-details {
+  background: $surface-2;
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  padding: 14px 20px;
+  max-width: 320px;
+  margin: 0 auto 24px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+
+  span:first-child { color: $ink-3; font-weight: 400; }
+  strong { color: $ink; font-weight: 600; }
+}
+
+.status-pill {
+  background: $warn-bg;
+  color: #92400e;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid $warn-bd;
+}
+
+.confirm-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  background: $accent-dim;
+  border: 1px solid $accent-mid;
+  border-radius: $radius-sm;
+  max-width: 360px;
+  margin: 0 auto;
+  font-size: 12.5px;
+  color: $accent;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: left;
+
+  svg { flex-shrink: 0; }
+}
+
+// ── Step 4: Confirmation card ────────────────────────────────
+.confirmation-card .card-icon.success-icon-sm {
+  background: $success-bg;
+  border-color: $success-bd;
+  color: $success;
+}
+
+.confirm-summary {
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  overflow: hidden;
+}
+
+.confirm-summary-label {
+  padding: 7px 14px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $ink-3;
+  background: $surface-2;
+  border-bottom: 1px solid $border;
+}
+
+.confirm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid $border;
+
+  &:last-child { border-bottom: none; }
+
+  span:first-child { color: $ink-3; font-weight: 400; }
+  strong { color: $ink; font-weight: 600; }
+}
+
+.next-steps {
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  overflow: hidden;
+}
+
+.next-steps-label {
+  padding: 7px 14px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $ink-3;
+  background: $surface-2;
+  border-bottom: 1px solid $border;
+}
+
+.next-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid $border;
+
+  &:last-child { border-bottom: none; }
+}
+
+.next-step-dot {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: $accent-dim;
+  border: 1px solid $accent-mid;
+  color: $accent;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.next-step-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: $ink;
+  margin-bottom: 2px;
+}
+
+.next-step-desc {
+  font-size: 12px;
+  color: $ink-3;
+  line-height: 1.55;
+}
+
+// ── Responsive ───────────────────────────────────────────────
+@media (max-width: 600px) {
+  .apply-page {
+    padding: 20px 16px;
+    gap: 16px;
+  }
+  .apply-header h1 { font-size: 28px; }
+
+  .field-row { flex-direction: column; }
+  .field-sm  { max-width: 100%; }
+  .req-grid  { grid-template-columns: 1fr; }
+
+  .steps-bar { padding: 12px 14px; }
+  .step-label { display: none; }
+
+  .card-footer,
+  .fields { padding-left: 16px; padding-right: 16px; }
 }

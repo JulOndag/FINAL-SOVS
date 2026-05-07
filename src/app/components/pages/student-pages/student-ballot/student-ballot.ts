@@ -132,10 +132,10 @@ export class StudentBallot implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/student-elections']);
+    this.router.navigate(['/app/student-elections']);
   }
 
   goToResults(): void {
-    this.router.navigate(['/student-results']);
+    this.router.navigate(['/app/student-results']);
   }
 }
