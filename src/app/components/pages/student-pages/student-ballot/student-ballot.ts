@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ElectionService, Election, Voter, Candidate } from '../../../../services/election';
 import { AuthService } from '../../../../services/auth';
 import { FormsModule } from '@angular/forms';
@@ -10,6 +10,8 @@ export interface BallotPosition {
   candidates: Candidate[];
 }
 
+type BallotView = 'select-election' | 'ballot' | 'success';
+
 @Component({
   selector: 'app-student-ballot',
   standalone: true,
@@ -18,45 +20,57 @@ export interface BallotPosition {
   styleUrl: './student-ballot.scss',
 })
 export class StudentBallot implements OnInit {
-  election: Election | null = null;
+  // Election selection state
+  elections: Election[] = [];
+  selectedElection: Election | null = null;
+
+  // Ballot state
   positions: BallotPosition[] = [];
   voter: Voter | null = null;
   votes: Record<string, string> = {};
+
+  // UI state
+  view: BallotView = 'select-election';
   loading = true;
+  ballotLoading = false;
   submitting = false;
-  submitted = false;
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     private svc: ElectionService,
     public auth: AuthService,
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
     const user = this.auth.getCurrentUser();
 
-    if (!id || !user) {
-      this.loading = false;
-      return;
+    // Load voter status
+    if (user) {
+      this.svc.getVoterByStudentId(user.email).subscribe((voters: Voter[]) => {
+        this.voter = voters[0] ?? null;
+      });
     }
 
-    const numericId = Number(id);
-
-    // Load all elections then find by id (both are number — no type mismatch)
+    // Load active elections
     this.svc.getElections().subscribe((elections: Election[]) => {
-      this.election = elections.find((e) => e.id === numericId) ?? null;
+      // Show active elections only on ballot page
+      this.elections = elections.filter((e) => e.status === 'active');
+      this.loading = false;
     });
+  }
 
-    // Load voter status by student id
-    this.svc.getVoterByStudentId(user.email).subscribe((voters: Voter[]) => {
-      this.voter = voters[0] ?? null;
-    });
+  // ── Election selection ──────────────────────────────────────────────
 
-    // Load approved candidates and group by position
+  selectElection(election: Election): void {
+    this.selectedElection = election;
+    this.votes = {};
+    this.view = 'ballot';
+    this.ballotLoading = true;
+
     this.svc.getCandidates().subscribe((candidates: Candidate[]) => {
-      const approved = candidates.filter((c) => c.status === 'approved');
+      const approved = candidates.filter(
+        (c) => c.status === 'approved'
+      );
       const positionMap = new Map<string, Candidate[]>();
 
       approved.forEach((c) => {
@@ -69,9 +83,18 @@ export class StudentBallot implements OnInit {
         candidates: cands,
       }));
 
-      this.loading = false;
+      this.ballotLoading = false;
     });
   }
+
+  backToSelection(): void {
+    this.selectedElection = null;
+    this.positions = [];
+    this.votes = {};
+    this.view = 'select-election';
+  }
+
+  // ── Ballot logic ────────────────────────────────────────────────────
 
   get hasVoted(): boolean {
     return this.voter?.hasVoted ?? false;
@@ -94,11 +117,16 @@ export class StudentBallot implements OnInit {
   }
 
   getInitials(name: string): string {
-    return name.split(' ').slice(0, 2).map((n) => n[0]).join('').toUpperCase();
+    return name
+      .split(' ')
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase();
   }
 
   selectCandidate(position: string, candidateId: string): void {
-    if (this.hasVoted || this.submitted) return;
+    if (this.hasVoted || this.view === 'success') return;
     if (this.votes[position] === candidateId) {
       const updated = { ...this.votes };
       delete updated[position];
@@ -108,34 +136,41 @@ export class StudentBallot implements OnInit {
     }
   }
 
-  isSelected(position: string, candidateId: string): boolean {
-    return this.votes[position] === candidateId;
-  }
-
   submitBallot(): void {
-    if (!this.allAnswered || !this.election || !this.voter) return;
+    if (!this.allAnswered || !this.selectedElection || !this.voter) return;
     this.submitting = true;
 
     const candidateList: Candidate[] = this.positions.flatMap((p) => p.candidates);
 
-    this.svc.castVote(this.voter, this.election, this.votes, candidateList).subscribe({
-      next: () => {
-        this.submitting = false;
-        this.submitted = true;
-        if (this.voter) this.voter = { ...this.voter, hasVoted: true };
-      },
-      error: () => {
-        this.submitting = false;
-        alert('Something went wrong. Please try again.');
-      },
-    });
+    this.svc
+      .castVote(this.voter, this.selectedElection, this.votes, candidateList)
+      .subscribe({
+        next: () => {
+          this.submitting = false;
+          if (this.voter) this.voter = { ...this.voter, hasVoted: true };
+          this.view = 'success';
+        },
+        error: () => {
+          this.submitting = false;
+          alert('Something went wrong. Please try again.');
+        },
+      });
   }
 
-  goBack(): void {
-    this.router.navigate(['/app/student-elections']);
+  getStatusLabel(status: string): string {
+    const map: Record<string, string> = {
+      active: 'Active',
+      upcoming: 'Upcoming',
+      completed: 'Completed',
+    };
+    return map[status] ?? status;
   }
 
   goToResults(): void {
     this.router.navigate(['/app/student-results']);
+  }
+
+  goHome(): void {
+    this.router.navigate(['/app/student-elections']);
   }
 }
