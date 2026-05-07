@@ -1,6 +1,5 @@
 <div class="login-container">
   <div class="ghost-text">VOTE</div>
-
   <div class="OSVE">Online School Voting and Election</div>
 
   <div class="left-panel">
@@ -17,7 +16,9 @@
     <h1>Online Voting and Election</h1>
     <p class="subtitle">Login to your account</p>
 
-    <div *ngIf="error" class="invalid-message">{{ error }}</div>
+    <div *ngIf="error" class="invalid-message">
+      {{ error }}
+    </div>
 
     <form (ngSubmit)="login()" #loginForm="ngForm">
       <div class="input-group">
@@ -48,7 +49,9 @@
         />
       </div>
 
-      <button type="submit" class="login-btn" [disabled]="loginForm.invalid">Login</button>
+      <button type="submit" class="login-btn" [disabled]="loginForm.invalid || loading">
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
     </form>
   </div>
 </div>

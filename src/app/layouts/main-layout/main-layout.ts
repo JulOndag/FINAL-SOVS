@@ -94,9 +94,8 @@ export class MainLayout implements OnInit {
       confirmButtonText: 'Yes, logout!',
       cancelButtonText: 'Cancel',
     }).then(async (result) => {
-      // ✅ async added
       if (result.isConfirmed) {
-        await this.auth.logout(); // ✅ await added
+        await this.auth.logout();
         Swal.fire({
           title: 'Logged out!',
           icon: 'success',

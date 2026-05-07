@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit {
         icon: 'success',
         title: 'Login Successful!',
         text: `Welcome, ${roleLabel}!`,
-        timer: 1000,
+        timer: 800,
         showConfirmButton: false,
       });
 

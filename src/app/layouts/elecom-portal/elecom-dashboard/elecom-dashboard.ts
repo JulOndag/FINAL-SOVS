@@ -172,6 +172,6 @@ export class ElecomDashboard implements OnInit, OnDestroy {
   }
 
   goTo(path: string): void {
-    this.router.navigate([path]);
+    this.router.navigate(['/app/' + path.replace('/', '')]);
   }
 }
