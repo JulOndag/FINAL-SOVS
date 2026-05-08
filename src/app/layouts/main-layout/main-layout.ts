@@ -22,7 +22,6 @@ export class MainLayout implements OnInit {
 
   private platformId = inject(PLATFORM_ID);
   readonly studentNotifService = inject(StudentNotificationService);
-  studentNotif: any;
 
   constructor(
     public auth: AuthService,
@@ -38,8 +37,7 @@ export class MainLayout implements OnInit {
     });
 
     if (this.isStudent()) {
-      this.studentNotif = new StudentNotificationService();
-      this.studentNotif.loadNotifications();
+      this.studentNotifService.loadNotifications();
     }
   }
 
