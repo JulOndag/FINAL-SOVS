@@ -9,8 +9,31 @@ body {
   height: 100%;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
+  padding: 0%;
+  overflow: hidden;
 }
 
 body {
   margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html.scroll {
+  overflow: hidden !important;
+}
+
+/* Hide scrollbar for Chrome, Safari, Edge */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+/* Hide scrollbar for Firefox */
+html,
+body {
+  scrollbar-width: none;
 }

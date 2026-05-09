@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
   imports: [FormsModule, CommonModule],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
-  host: { style: 'display: block; width: 100%; height: 100vh;' },
+  host: { style: 'display: block; width: 100%; height: 100vh; overflow: hidden;' },
 })
 export class LoginComponent implements OnInit {
   identifier = '';

@@ -1,56 +1,19 @@
-// ── Design Tokens ─────────────────────────────────────────────
-$blue-900: #0d1f4e;
-$blue-800: #1a3370;
-$blue-700: #1e3fa0;
-$blue-600: #2952cc;
-$blue-500: #3b6ef0;
-$blue-400: #6b90f5;
-$blue-100: #e8eeff;
-$blue-50: #f0f4ff;
-
-$surface: #ffffff;
-$bg: #f5f7fc;
-$border: #e4e9f5;
-$text: #0d1f4e;
-$muted: #7a89b0;
-$danger: #e5534b;
-
-$sidebar-w: 220px;
-$topbar-h: 56px;
-$radius: 8px;
-
-// ── Reset helpers ──────────────────────────────────────────────
+// ── Reset ─────────────────────────────────────────────────────
 * {
   box-sizing: border-box;
-}
-
-// ── Login ──────────────────────────────────────────────────────
-.login-wrapper {
-  height: 100vh;
-  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 // ── App Shell ─────────────────────────────────────────────────
-.app-layout {
-  display: flex;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
-  background: $bg;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-}
-
-.login-wrapper {
-  height: 100vh;
-  width: 100%;
-}
-
+// This is the root wrapper — must be full height, no overflow
 .app-layout {
   display: flex;
   height: 100vh;
   width: 100%;
   overflow: hidden;
   background: #f4f6f9;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
 // ── Sidebar ───────────────────────────────────────────────────
@@ -64,8 +27,10 @@ $radius: 8px;
   overflow-y: auto;
   transition: transform 0.3s ease;
   z-index: 100;
+  flex-shrink: 0; // prevents sidebar from shrinking
 }
 
+// Logo area at top of sidebar
 .logo-section {
   padding: 24px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -93,6 +58,7 @@ $radius: 8px;
   }
 }
 
+// Sidebar nav links
 .menu {
   list-style: none;
   padding: 12px 0;
@@ -130,6 +96,7 @@ $radius: 8px;
   }
 }
 
+// User info at bottom of sidebar
 .sidebar-footer {
   display: flex;
   align-items: center;
@@ -163,7 +130,7 @@ $radius: 8px;
   }
 }
 
-// ── Overlay ───────────────────────────────────────────────────
+// ── Overlay (mobile only) ─────────────────────────────────────
 .overlay {
   display: none;
   position: fixed;
@@ -172,12 +139,14 @@ $radius: 8px;
   z-index: 99;
 }
 
-// ── Main Content ──────────────────────────────────────────────
+// ── Main Content Area ─────────────────────────────────────────
+// Takes remaining width, stacks header + body vertically
 .content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; // prevents content from overflowing
+  min-width: 0; // fixes flex overflow bug
 }
 
 // ── Topbar ────────────────────────────────────────────────────
@@ -190,7 +159,7 @@ $radius: 8px;
   border-bottom: 1px solid #e8eaed;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   gap: 16px;
-  flex-shrink: 0;
+  flex-shrink: 0; // header never shrinks
 }
 
 .hamburger {
@@ -334,19 +303,23 @@ $radius: 8px;
 }
 
 // ── Content Body ──────────────────────────────────────────────
+// This is where router-outlet renders each page
+// Only this scrolls — everything else is fixed
 .content-body {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: auto; // pages scroll here
+  overflow: hidden; // no horizontal scroll
   padding: 0;
   background: #f4f6f9;
 }
 
-// ── Responsive ────────────────────────────────────────────────
+// ── Responsive (Mobile) ───────────────────────────────────────
 @media (max-width: 768px) {
   .hamburger {
     display: block;
   }
 
+  // Sidebar hides off screen on mobile
   .sidebar {
     position: fixed;
     left: 0;
