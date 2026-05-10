@@ -81,8 +81,8 @@
 /* ── Grid ── */
 .elections-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
 }
 
 /* ── Card ── */
@@ -110,7 +110,7 @@
 
 .election-card.completed {
   border-top: 3px solid #94a3b8;
-  opacity: 0.85;
+  opacity: 0.92;
 }
 
 /* Card Top */
@@ -281,20 +281,20 @@
 }
 
 .btn-completed {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 100%;
-  padding: 11px;
+  padding: 9px 14px;
   background: #f1f5f9;
   color: #64748b;
-  border: none;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   cursor: not-allowed;
   font-family: inherit;
+  flex: 1;
 }
 
 /* ── Responsive ── */
@@ -306,4 +306,226 @@
   .elections-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ── Completed Actions (Election Closed + View My Votes side by side) ── */
+.completed-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-history {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid #2952cc;
+  background: transparent;
+  color: #2952cc;
+  font-family: inherit;
+  transition:
+    background 0.15s,
+    color 0.15s;
+  flex: 1;
+}
+
+.btn-history:hover {
+  background: #2952cc;
+  color: #fff;
+}
+
+/* ── History Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-box {
+  background: #ffffff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #1e293b;
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.modal-subtitle {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 4px;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.modal-close:hover {
+  color: #1e293b;
+  background: #f1f5f9;
+}
+
+.modal-body {
+  padding: 20px 22px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.modal-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #64748b;
+  font-size: 13px;
+  padding: 20px 0;
+}
+
+.spinner-sm {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #e2e8f0;
+  border-top-color: #2952cc;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ── History Table ── */
+.history-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ht-row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  padding: 11px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  align-items: center;
+  gap: 8px;
+}
+
+.ht-row:last-child {
+  border-bottom: none;
+}
+
+.ht-head {
+  background: #f8fafc;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ht-col {
+  display: flex;
+  align-items: center;
+}
+
+.ht-position {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.choice-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+
+.choice-chip.chip-voted {
+  background: rgba(22, 163, 74, 0.1);
+  color: #15803d;
+}
+
+.choice-chip.chip-abstain {
+  background: rgba(230, 126, 34, 0.1);
+  color: #b45309;
+}
+
+.chip-party {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.modal-empty {
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+  padding: 24px 0;
+}
+
+.modal-footer {
+  padding: 14px 22px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-modal-close {
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  transition: background 0.15s;
+  font-family: inherit;
+}
+
+.btn-modal-close:hover {
+  background: #e2e8f0;
 }

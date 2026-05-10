@@ -13,6 +13,8 @@ export interface BallotPosition {
 
 type BallotView = 'ballot' | 'success';
 
+const ABSTAIN = '__ABSTAIN__';
+
 @Component({
   selector: 'app-student-ballot',
   standalone: true,
@@ -26,10 +28,15 @@ export class StudentBallot implements OnInit {
   voter: Voter | null = null;
   votes: Record<string, string> = {};
 
+  /** Resolved candidate objects for the success summary */
+  voteSummary: { position: string; candidate: Candidate | null; abstained: boolean }[] = [];
+
   view: BallotView = 'ballot';
   loading = true;
   ballotLoading = false;
   submitting = false;
+
+  readonly ABSTAIN = ABSTAIN;
 
   constructor(
     private route: ActivatedRoute,
@@ -138,16 +145,51 @@ export class StudentBallot implements OnInit {
     }
   }
 
+  /** Toggle abstain for a position */
+  toggleAbstain(position: string): void {
+    if (this.hasVoted || this.view === 'success') return;
+    if (this.votes[position] === ABSTAIN) {
+      const updated = { ...this.votes };
+      delete updated[position];
+      this.votes = updated;
+    } else {
+      this.votes = { ...this.votes, [position]: ABSTAIN };
+    }
+  }
+
+  isAbstained(position: string): boolean {
+    return this.votes[position] === ABSTAIN;
+  }
+
+  buildSummary(): void {
+    const allCandidates = this.positions.flatMap((p) => p.candidates);
+    this.voteSummary = this.positions.map((p) => {
+      const val = this.votes[p.name];
+      if (!val || val === ABSTAIN) {
+        return { position: p.name, candidate: null, abstained: true };
+      }
+      const found = allCandidates.find((c) => c.id === val) ?? null;
+      return { position: p.name, candidate: found, abstained: false };
+    });
+  }
+
   submitBallot(): void {
     if (!this.allAnswered || !this.selectedElection || !this.voter) return;
     this.submitting = true;
 
+    // Filter out abstains — only cast real votes
+    const realVotes: Record<string, string> = {};
+    for (const [pos, val] of Object.entries(this.votes)) {
+      if (val !== ABSTAIN) realVotes[pos] = val;
+    }
+
     const candidateList = this.positions.flatMap((p) => p.candidates);
 
-    this.svc.castVote(this.voter, this.selectedElection, this.votes, candidateList).subscribe({
+    this.svc.castVote(this.voter, this.selectedElection, realVotes, candidateList).subscribe({
       next: () => {
         this.submitting = false;
         if (this.voter) this.voter = { ...this.voter, hasVoted: true };
+        this.buildSummary();
         this.view = 'success';
       },
       error: (err) => {
@@ -162,7 +204,7 @@ export class StudentBallot implements OnInit {
   }
 
   goToResults(): void {
-    this.router.navigate(['/app/student-results']);
+    this.router.navigate(['/app/student-elections']);
   }
   goHome(): void {
     this.router.navigate(['/app/student-elections']);
