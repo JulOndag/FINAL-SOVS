@@ -55,45 +55,131 @@ export const routes: Routes = [
          ELECOM ROUTES
       ========================= */
 
-      { path: 'elecom-dashboard', component: ElecomDashboard, canActivate: [RoleGuard], data: { role: 'elecom' } },
+      {
+        path: 'elecom-dashboard',
+        component: ElecomDashboard,
+        canActivate: [RoleGuard],
+        data: { role: 'elecom' },
+      },
 
-      { path: 'elecom-voters', component: Voters, canActivate: [RoleGuard], data: { role: 'elecom' } },
+      {
+        path: 'elecom-voters',
+        component: Voters,
+        canActivate: [RoleGuard],
+        data: { role: 'elecom' },
+      },
 
-      { path: 'elecom-candidates', component: Candidates, canActivate: [RoleGuard], data: { role: 'elecom' } },
+      {
+        path: 'elecom-candidates',
+        component: Candidates,
+        canActivate: [RoleGuard],
+        data: { role: 'elecom' },
+      },
 
-      { path: 'elecom-elections', component: Elections, canActivate: [RoleGuard], data: { role: 'elecom' } },
+      {
+        path: 'elecom-elections',
+        component: Elections,
+        canActivate: [RoleGuard],
+        data: { role: 'elecom' },
+      },
 
-      { path: 'elecom-results', component: Results, canActivate: [RoleGuard], data: { role: 'elecom' } },
+      {
+        path: 'elecom-results',
+        component: Results,
+        canActivate: [RoleGuard],
+        data: { role: 'elecom' },
+      },
 
-      { path: 'elecom-notifications', component: ElecomNotif, canActivate: [RoleGuard], data: { role: 'elecom' } },
+      {
+        path: 'elecom-notifications',
+        component: ElecomNotif,
+        canActivate: [RoleGuard],
+        data: { role: 'elecom' },
+      },
 
-      { path: 'elecom-settings', component: ElecomSettings, canActivate: [RoleGuard], data: { role: 'elecom' } },
+      {
+        path: 'elecom-settings',
+        component: ElecomSettings,
+        canActivate: [RoleGuard],
+        data: { role: 'elecom' },
+      },
 
-      { path: 'elecom-ballot-creator', component: BallotCreator, canActivate: [RoleGuard], data: { role: 'elecom' } },
+      {
+        path: 'elecom-ballot-creator',
+        component: BallotCreator,
+        canActivate: [RoleGuard],
+        data: { role: 'elecom' },
+      },
 
       /* =========================
          ADMIN ROUTES
       ========================= */
 
-      { path: 'admin-dashboard', component: AdminDashboard, canActivate: [RoleGuard], data: { role: 'admin' } },
+      {
+        path: 'admin-dashboard',
+        component: AdminDashboard,
+        canActivate: [RoleGuard],
+        data: { role: 'admin' },
+      },
 
-      { path: 'admin-notifications', component: AdminNotifications, canActivate: [RoleGuard], data: { role: 'admin' } },
+      {
+        path: 'admin-notifications',
+        component: AdminNotifications,
+        canActivate: [RoleGuard],
+        data: { role: 'admin' },
+      },
 
-      { path: 'admin-settings', component: AdminSettings, canActivate: [RoleGuard], data: { role: 'admin' } },
+      {
+        path: 'admin-settings',
+        component: AdminSettings,
+        canActivate: [RoleGuard],
+        data: { role: 'admin' },
+      },
 
       /* =========================
          STUDENT ROUTES
       ========================= */
 
-      { path: 'student-dashboard', component: StudentDashboard, canActivate: [RoleGuard], data: { role: 'student' } },
+      {
+        path: 'student-dashboard',
+        component: StudentDashboard,
+        canActivate: [RoleGuard],
+        data: { role: 'student' },
+      },
 
-      { path: 'student-elections', component: StudentElections, canActivate: [RoleGuard], data: { role: 'student' } },
+      {
+        path: 'student-elections',
+        component: StudentElections,
+        canActivate: [RoleGuard],
+        data: { role: 'student' },
+      },
 
-      { path: 'student-apply', component: StudentApply, canActivate: [RoleGuard], data: { role: 'student' } },
+      {
+        path: 'student-apply',
+        component: StudentApply,
+        canActivate: [RoleGuard],
+        data: { role: 'student' },
+      },
 
-      { path: 'student-ballot', component: StudentBallot, canActivate: [RoleGuard], data: { role: 'student' } },
+      {
+        path: 'student-ballot',
+        component: StudentBallot,
+        canActivate: [RoleGuard],
+        data: { role: 'student' },
+      },
 
-      { path: 'student-notifications', component: StudentNotif, canActivate: [RoleGuard], data: { role: 'student' } },
+      {
+        path: 'student-notifications',
+        component: StudentNotif,
+        canActivate: [RoleGuard],
+        data: { role: 'student' },
+      },
+      {
+        path: 'student-ballot/:id',
+        component: StudentBallot,
+        canActivate: [RoleGuard],
+        data: { role: 'student' },
+      },
     ],
   },
 
