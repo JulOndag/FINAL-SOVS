@@ -1,17 +1,13 @@
 <div class="admin-dashboard">
-  <!-- Header -->
+  <!-- ── Header ─────────────────────────────────────────────── -->
   <div class="page-header">
     <div class="header-left">
       <h1>🗳️ Admin Dashboard</h1>
       <p class="page-sub">Create, manage, and audit USG Elections</p>
     </div>
-    <div class="header-right">
-      <button class="btn-secondary" (click)="openAccountModal()">👤 Create Account</button>
-      <button class="btn-create" (click)="openCreate()">+ Create Election</button>
-    </div>
   </div>
 
-  <!-- Stats -->
+  <!-- ── Stats ──────────────────────────────────────────────── -->
   <div class="stats-grid">
     <div class="stat-card total">
       <div class="stat-icon">📋</div>
@@ -47,52 +43,161 @@
     </div>
   </div>
 
-  <!-- Active Banner -->
-  <div class="active-banner" *ngIf="activeElection">
-    <div class="banner-dot"></div>
-    <div class="banner-info">
-      <span class="banner-label">🔴 Live — Active Election</span>
-      <span class="banner-name">{{ activeElection.name }}</span>
-      <span class="banner-meta"
-        >{{ activeElection.startDate }} — {{ activeElection.endDate }} ·
-        {{ activeElection.totalPositions }} positions</span
-      >
-    </div>
-    <button class="btn-end" (click)="end(activeElection)">⏹ End Election</button>
-  </div>
-
-  <!-- Pending applications alert -->
-  <div class="alert-banner" *ngIf="pendingApplications.length > 0">
-    <span>📨 {{ pendingApplications.length }} candidate application(s) waiting for review.</span>
-    <button (click)="activeTab = 'applications'">Review Now →</button>
-  </div>
-
-  <!-- Tabs -->
+  <!-- ── Tabs ───────────────────────────────────────────────── -->
   <div class="tab-nav">
+    <button [class.active]="activeTab === 'applications'" (click)="activeTab = 'applications'">
+      🏠 Overview
+    </button>
     <button [class.active]="activeTab === 'elections'" (click)="activeTab = 'elections'">
       🗳️ Elections
-    </button>
-    <button [class.active]="activeTab === 'applications'" (click)="activeTab = 'applications'">
-      📨 Applications
-      <span class="tab-badge" *ngIf="pendingApplications.length > 0">{{
-        pendingApplications.length
-      }}</span>
-    </button>
-    <button [class.active]="activeTab === 'results'" (click)="activeTab = 'results'">
-      📊 Results
     </button>
     <button [class.active]="activeTab === 'accounts'" (click)="activeTab = 'accounts'">
       👤 Accounts
     </button>
+    <button [class.active]="activeTab === 'results'" (click)="activeTab = 'results'">
+      📊 Results
+    </button>
   </div>
 
-  <!-- ══════════════════════════════════════ -->
-  <!--  TAB: ELECTIONS                        -->
-  <!-- ══════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  TAB: OVERVIEW                                            -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div *ngIf="activeTab === 'applications'">
+    <!-- Active election banner -->
+    <div class="active-banner" *ngIf="activeElection">
+      <div class="banner-dot"></div>
+      <div class="banner-info">
+        <span class="banner-label">🔴 Live — Active Election</span>
+        <span class="banner-name">{{ activeElection.name }}</span>
+        <span class="banner-meta">
+          {{ activeElection.startDate }} — {{ activeElection.endDate }} ·
+          {{ activeElection.totalPositions }} positions
+        </span>
+      </div>
+      <button class="btn-end" (click)="end(activeElection)">⏹ End Election</button>
+    </div>
+
+    <!-- No active election -->
+    <div class="empty-banner" *ngIf="!activeElection">
+      <span>⚪ No election is currently active.</span>
+      <button class="btn-secondary" (click)="activeTab = 'elections'">View Elections →</button>
+    </div>
+
+    <!-- Pending applications alert -->
+    <div class="alert-banner" *ngIf="pendingApplications.length > 0">
+      <span>📨 {{ pendingApplications.length }} candidate application(s) waiting for review.</span>
+      <button (click)="activeTab = 'elections'">Review Now →</button>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="table-card">
+      <div class="table-header">
+        <h2>Quick Actions</h2>
+      </div>
+      <div class="quick-actions">
+        <button class="btn-quick" (click)="openCreate()">
+          <span class="quick-icon">🗳️</span>
+          <span class="quick-label">Create Election</span>
+        </button>
+        <button class="btn-quick" (click)="openAccountModal()">
+          <span class="quick-icon">🏛️</span>
+          <span class="quick-label">Create ELECOM Account</span>
+        </button>
+        <button class="btn-quick" (click)="activeTab = 'elections'">
+          <span class="quick-icon">📋</span>
+          <span class="quick-label">Manage Elections</span>
+        </button>
+        <button
+          class="btn-quick"
+          (click)="activeTab = 'results'"
+          [disabled]="completedElections.length === 0"
+        >
+          <span class="quick-icon">📊</span>
+          <span class="quick-label">View Results</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Recent applications -->
+    <div class="table-card" *ngIf="applications.length > 0">
+      <div class="table-header">
+        <h2>Candidate Applications</h2>
+        <span class="table-count">
+          {{ applications.length }} total · {{ pendingApplications.length }} pending
+        </span>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Position</th>
+              <th>Party</th>
+              <th>Course</th>
+              <th>Requirements</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let app of applications">
+              <td class="name-cell">{{ app.name }}</td>
+              <td>{{ app.position }}</td>
+              <td>{{ app.party || 'Independent' }}</td>
+              <td>{{ app.course }}</td>
+              <td>
+                <span class="req-count">
+                  {{
+                    app.requirements
+                      ? (app.requirements.enrollment ? 1 : 0) +
+                        (app.requirements.goodMoral ? 1 : 0) +
+                        (app.requirements.residency ? 1 : 0) +
+                        (app.requirements.coc ? 1 : 0) +
+                        (app.requirements.noViolations ? 1 : 0) +
+                        (app.requirements.noFailingGrades ? 1 : 0)
+                      : 0
+                  }}
+                  / 6
+                </span>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="appStatusClass(app.status)">
+                  {{ app.status }}
+                </span>
+              </td>
+              <td>
+                <div class="action-btns" *ngIf="app.status === 'pending'">
+                  <button class="btn-action btn-start" (click)="approveApplication(app)">
+                    ✅ Approve
+                  </button>
+                  <button class="btn-action btn-delete" (click)="rejectApplication(app)">
+                    ❌ Reject
+                  </button>
+                </div>
+                <span *ngIf="app.status !== 'pending'" class="reviewed-label">Reviewed</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loadingApps && applications.length === 0">
+      <p>No applications yet</p>
+      <span>Students can apply from their portal</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  TAB: ELECTIONS                                           -->
+  <!-- ══════════════════════════════════════════════════════════ -->
   <div class="table-card" *ngIf="activeTab === 'elections'">
     <div class="table-header">
       <h2>All Elections</h2>
-      <span class="table-count">{{ elections.length }} total</span>
+      <div class="header-actions">
+        <span class="table-count">{{ elections.length }} total</span>
+        <button class="btn-create" (click)="openCreate()">+ Create Election</button>
+      </div>
     </div>
 
     <div class="loading-state" *ngIf="loading">Loading elections...</div>
@@ -122,12 +227,14 @@
             <td class="date-cell">{{ e.endDate }}</td>
             <td>{{ e.totalPositions }}</td>
             <td>
-              <span class="status-badge" [ngClass]="statusClass(e.status)">{{ e.status }}</span>
+              <span class="status-badge" [ngClass]="statusClass(e.status)">
+                {{ e.status }}
+              </span>
             </td>
             <td>
-              <span class="audit-badge" [ngClass]="auditClass(e.auditStatus)">{{
-                e.auditStatus || 'pending'
-              }}</span>
+              <span class="audit-badge" [ngClass]="auditClass(e.auditStatus)">
+                {{ e.auditStatus || 'pending' }}
+              </span>
             </td>
             <td>
               <div class="action-btns">
@@ -146,11 +253,10 @@
                 >
                   ⏹ End
                 </button>
-                <!-- show results button for completed elections -->
                 <button
                   class="btn-action btn-results"
                   *ngIf="e.status === 'completed'"
-                  (click)="loadResults(e)"
+                  (click)="loadResults(e); activeTab = 'results'"
                 >
                   📊 Results
                 </button>
@@ -176,113 +282,54 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════ -->
-  <!--  TAB: APPLICATIONS                     -->
-  <!-- Applications submitted by students     -->
-  <!-- Admin approves or rejects here         -->
-  <!-- ══════════════════════════════════════ -->
-  <div class="table-card" *ngIf="activeTab === 'applications'">
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  TAB: ACCOUNTS                                            -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="table-card" *ngIf="activeTab === 'accounts'">
     <div class="table-header">
-      <h2>Candidate Applications</h2>
-      <span class="table-count"
-        >{{ applications.length }} total · {{ pendingApplications.length }} pending</span
-      >
+      <h2>🏛️ ELECOM Accounts</h2>
     </div>
-
-    <div class="loading-state" *ngIf="loadingApps">Loading applications...</div>
-
-    <div class="empty-state" *ngIf="!loadingApps && applications.length === 0">
-      <p>No applications yet</p>
-      <span>Students can apply from their portal</span>
-    </div>
-
-    <div class="table-wrapper" *ngIf="!loadingApps && applications.length > 0">
-      <table>
-        <thead>
-          <tr>
-            <th>Student Name</th>
-            <th>Position</th>
-            <th>Party</th>
-            <th>Course</th>
-            <th>Requirements</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let app of applications">
-            <td class="name-cell">{{ app.name }}</td>
-            <td>{{ app.position }}</td>
-            <td>{{ app.party || 'Independent' }}</td>
-            <td>{{ app.course }}</td>
-            <td>
-              <!-- show how many requirements were met -->
-              <span class="req-count">
-                {{
-                  app.requirements
-                    ? (app.requirements.enrollment ? 1 : 0) +
-                      (app.requirements.goodMoral ? 1 : 0) +
-                      (app.requirements.residency ? 1 : 0) +
-                      (app.requirements.coc ? 1 : 0) +
-                      (app.requirements.noViolations ? 1 : 0) +
-                      (app.requirements.noFailingGrades ? 1 : 0)
-                    : 0
-                }}
-                / 6
-              </span>
-            </td>
-            <td>
-              <span class="status-badge" [ngClass]="appStatusClass(app.status)">{{
-                app.status
-              }}</span>
-            </td>
-            <td>
-              <div class="action-btns" *ngIf="app.status === 'pending'">
-                <button class="btn-action btn-start" (click)="approveApplication(app)">
-                  ✅ Approve
-                </button>
-                <button class="btn-action btn-delete" (click)="rejectApplication(app)">
-                  ❌ Reject
-                </button>
-              </div>
-              <span *ngIf="app.status !== 'pending'" class="reviewed-label">Reviewed</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="accounts-info">
+      <p>
+        Create Election Committee (ELECOM) accounts. ELECOM members can monitor real-time results,
+        manage voters, and oversee the election process.
+      </p>
+      <button class="btn-create" (click)="openAccountModal()">🏛️ Create ELECOM Account</button>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════ -->
-  <!--  TAB: RESULTS                          -->
-  <!-- Shows real-time vote results           -->
-  <!-- ══════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  TAB: RESULTS                                             -->
+  <!--  Only shown for COMPLETED elections                       -->
+  <!-- ══════════════════════════════════════════════════════════ -->
   <div class="table-card" *ngIf="activeTab === 'results'">
     <div class="table-header">
-      <h2>Election Results</h2>
-      <span class="table-count" *ngIf="selectedResultElection">{{
-        selectedResultElection.name
-      }}</span>
+      <h2>📊 Election Results</h2>
+      <span class="table-count" *ngIf="selectedResultElection">
+        {{ selectedResultElection.name }}
+      </span>
     </div>
 
-    <!-- prompt to select a completed election -->
-    <div class="empty-state" *ngIf="!selectedResultElection && completedElections.length === 0">
+    <!-- No completed elections -->
+    <div class="empty-state" *ngIf="completedElections.length === 0 && !selectedResultElection">
       <p>No completed elections yet</p>
-      <span>Results will appear here after an election ends</span>
+      <span>Results will appear here once an election ends</span>
     </div>
 
+    <!-- Pick a completed election -->
     <div class="election-selector" *ngIf="completedElections.length > 0 && !selectedResultElection">
       <p>Select a completed election to view results:</p>
       <div class="election-pick-list">
         <button class="btn-pick" *ngFor="let e of completedElections" (click)="loadResults(e)">
-          {{ e.name }} <span class="pick-date">{{ e.endDate }}</span>
+          {{ e.name }}
+          <span class="pick-date">{{ e.endDate }}</span>
         </button>
       </div>
     </div>
 
     <div class="loading-state" *ngIf="loadingResults">Loading results...</div>
 
-    <!-- results by position -->
+    <!-- Results by position -->
     <div
       class="results-grid"
       *ngIf="!loadingResults && selectedResultElection && resultsByPosition.length > 0"
@@ -290,13 +337,14 @@
       <div class="result-position" *ngFor="let group of resultsByPosition">
         <div class="position-title">{{ group.position }}</div>
         <div class="position-total">{{ group.total }} votes total</div>
-
         <div
           class="candidate-result"
           *ngFor="let c of group.candidates; let i = index"
           [class.winner]="i === 0 && c.votes > 0"
         >
-          <div class="candidate-rank">{{ i === 0 && c.votes > 0 ? '🥇' : '#' + (i + 1) }}</div>
+          <div class="candidate-rank">
+            {{ i === 0 && c.votes > 0 ? '🥇' : '#' + (i + 1) }}
+          </div>
           <div class="candidate-info">
             <div class="candidate-name">{{ c.name }}</div>
             <div class="candidate-party">{{ c.party }}</div>
@@ -305,9 +353,9 @@
             <div class="vote-bar-track">
               <div class="vote-bar-fill" [style.width.%]="getPercent(c.votes, group.total)"></div>
             </div>
-            <span class="vote-count"
-              >{{ c.votes }} votes ({{ getPercent(c.votes, group.total) }}%)</span
-            >
+            <span class="vote-count">
+              {{ c.votes }} votes ({{ getPercent(c.votes, group.total) }}%)
+            </span>
           </div>
         </div>
       </div>
@@ -327,26 +375,9 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════ -->
-  <!--  TAB: ACCOUNTS                         -->
-  <!-- Info about creating student accounts   -->
-  <!-- ══════════════════════════════════════ -->
-  <div class="table-card" *ngIf="activeTab === 'accounts'">
-    <div class="table-header">
-      <h2>Student Accounts</h2>
-    </div>
-    <div class="accounts-info">
-      <p>
-        Create student accounts so they can log in to the student portal and participate in
-        elections.
-      </p>
-      <button class="btn-create" (click)="openAccountModal()">👤 Create Student Account</button>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════ -->
-  <!--  CREATE ELECTION MODAL                 -->
-  <!-- ══════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  CREATE ELECTION MODAL                                    -->
+  <!-- ══════════════════════════════════════════════════════════ -->
   <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
     <div class="modal-box" (click)="$event.stopPropagation()">
       <div class="modal-header">
@@ -390,23 +421,31 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════ -->
-  <!--  CREATE STUDENT ACCOUNT MODAL          -->
-  <!-- ══════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  CREATE ELECOM ACCOUNT MODAL                              -->
+  <!-- ══════════════════════════════════════════════════════════ -->
   <div class="modal-overlay" *ngIf="showAccountModal" (click)="closeAccountModal()">
     <div class="modal-box" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3>👤 Create Student Account</h3>
+        <h3>🏛️ Create ELECOM Account</h3>
         <button class="modal-close" (click)="closeAccountModal()">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
           <label>Full Name *</label>
-          <input type="text" [(ngModel)]="accountForm.name" placeholder="e.g. Juan Dela Cruz" />
+          <input type="text" [(ngModel)]="accountForm.name" placeholder="e.g. Maria Santos" />
+        </div>
+        <div class="form-group">
+          <label>Username *</label>
+          <input type="text" [(ngModel)]="accountForm.username" placeholder="e.g. msantos" />
         </div>
         <div class="form-group">
           <label>Email *</label>
-          <input type="email" [(ngModel)]="accountForm.email" placeholder="student@gmail.com" />
+          <input
+            type="email"
+            [(ngModel)]="accountForm.email"
+            placeholder="e.g. msantos@ustp.edu.ph"
+          />
         </div>
         <div class="form-group">
           <label>Password *</label>
@@ -416,29 +455,19 @@
             placeholder="Min. 6 characters"
           />
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Course</label>
-            <input type="text" [(ngModel)]="accountForm.course" placeholder="e.g. BSIT" />
-          </div>
-          <div class="form-group">
-            <label>Year Level</label>
-            <input type="text" [(ngModel)]="accountForm.year" placeholder="e.g. 2nd" />
-          </div>
-        </div>
       </div>
       <div class="modal-footer">
         <button class="btn-cancel" (click)="closeAccountModal()">Cancel</button>
-        <button class="btn-save" (click)="createStudentAccount()" [disabled]="creatingAccount">
-          {{ creatingAccount ? 'Creating...' : 'Create Account' }}
+        <button class="btn-save" (click)="createElecomAccount()" [disabled]="creatingAccount">
+          {{ creatingAccount ? 'Creating...' : 'Create ELECOM Account' }}
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════ -->
-  <!--  AUDIT MODAL (unchanged)               -->
-  <!-- ══════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  AUDIT MODAL                                              -->
+  <!-- ══════════════════════════════════════════════════════════ -->
   <div class="modal-overlay" *ngIf="showAuditModal" (click)="closeAudit()">
     <div class="modal-box audit-modal" (click)="$event.stopPropagation()">
       <div class="modal-header">
@@ -447,7 +476,9 @@
       </div>
       <div class="modal-body">
         <div class="audit-name">{{ auditElection?.name }}</div>
-        <div class="audit-loading" *ngIf="auditLoading"><span>Running audit checks...</span></div>
+        <div class="audit-loading" *ngIf="auditLoading">
+          <span>Running audit checks...</span>
+        </div>
         <div class="audit-checks" *ngIf="!auditLoading">
           <div class="audit-check" *ngFor="let c of auditChecks" [ngClass]="'check-' + c.status">
             <span class="check-icon">{{ checkIcon(c.status) }}</span>
@@ -458,16 +489,19 @@
           </div>
         </div>
         <div class="audit-overall" *ngIf="!auditLoading" [ngClass]="'overall-' + auditOverall">
-          <span *ngIf="auditOverall === 'clean'">✅ Election looks clean — no issues found</span>
-          <span *ngIf="auditOverall === 'warning'"
-            >⚠️ Minor issues found — review before certifying</span
-          >
-          <span *ngIf="auditOverall === 'flagged'"
-            >❌ Serious issues detected — possible manipulation</span
-          >
+          <span *ngIf="auditOverall === 'clean'"> ✅ Election looks clean — no issues found </span>
+          <span *ngIf="auditOverall === 'warning'">
+            ⚠️ Minor issues found — review before certifying
+          </span>
+          <span *ngIf="auditOverall === 'flagged'">
+            ❌ Serious issues detected — possible manipulation
+          </span>
         </div>
         <div class="form-group" *ngIf="!auditLoading">
-          <label>Admin Note <span style="color: #94a3b8">(required when flagging)</span></label>
+          <label
+            >Admin Note
+            <span style="color: #94a3b8">(required when flagging)</span>
+          </label>
           <textarea
             [(ngModel)]="auditNote"
             rows="3"
