@@ -1,0 +1,87 @@
+// Reuses admin-dashboard styles — add this to reuse existing styles
+@use '../admin-dashboard/admin-dashboard.scss';
+
+.app-filter-bar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 0;
+
+  button {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--color-border-secondary);
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    &.active {
+      background: var(--color-accent-primary);
+      color: white;
+      border-color: var(--color-accent-primary);
+    }
+  }
+}
+
+.cand-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-init {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-accent-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.cand-name {
+  font-weight: 500;
+  font-size: 14px;
+}
+.cand-meta {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+.election-name {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.req-pill {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border-secondary);
+
+  &.req-full {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #15803d;
+  }
+}
+
+.reviewed-label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}

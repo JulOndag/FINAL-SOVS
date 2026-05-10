@@ -1,0 +1,169 @@
+<div class="admin-dashboard">
+  <div class="page-header">
+    <div class="header-left">
+      <h1>👥 Manage Candidates</h1>
+      <p class="page-sub">Review student applications and manage approved candidates</p>
+    </div>
+  </div>
+
+  <!-- ── Tabs ─────────────────────────────────────────────── -->
+  <div class="tab-nav">
+    <button [class.active]="activeTab === 'applications'" (click)="activeTab = 'applications'">
+      📨 Applications
+      <span class="tab-badge" *ngIf="pendingCount > 0">{{ pendingCount }}</span>
+    </button>
+    <button [class.active]="activeTab === 'candidates'" (click)="activeTab = 'candidates'">
+      ✅ Approved Candidates
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  TAB: APPLICATIONS                                     -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="table-card" *ngIf="activeTab === 'applications'">
+    <div class="table-header">
+      <h2>Student Applications</h2>
+      <span class="table-count">
+        {{ applications.length }} total · {{ pendingCount }} pending
+      </span>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="app-filter-bar">
+      <button [class.active]="appFilter === 'pending'" (click)="appFilter = 'pending'">
+        Pending
+        <span class="tab-badge" *ngIf="pendingCount > 0">{{ pendingCount }}</span>
+      </button>
+      <button [class.active]="appFilter === 'approved'" (click)="appFilter = 'approved'">
+        Approved
+      </button>
+      <button [class.active]="appFilter === 'rejected'" (click)="appFilter = 'rejected'">
+        Disqualified
+      </button>
+      <button [class.active]="appFilter === 'all'" (click)="appFilter = 'all'">All</button>
+    </div>
+
+    <div class="loading-state" *ngIf="loadingApps">Loading applications...</div>
+
+    <div class="empty-state" *ngIf="!loadingApps && filteredApplications.length === 0">
+      <p>{{ appFilter === 'pending' ? 'No pending applications' : 'No applications found' }}</p>
+      <span>Students can apply from their portal</span>
+    </div>
+
+    <div class="table-wrapper" *ngIf="!loadingApps && filteredApplications.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Position</th>
+            <th>Party</th>
+            <th>Course</th>
+            <th>Election</th>
+            <th>Requirements</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let app of filteredApplications">
+            <td class="name-cell">
+              <div class="cand-cell">
+                <div class="avatar-init">{{ initial(app.name) }}</div>
+                <div>
+                  <div class="cand-name">{{ app.name }}</div>
+                  <div class="cand-meta">{{ app.course }} · Year {{ app.year }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <strong>{{ app.position }}</strong>
+            </td>
+            <td>{{ app.party || 'Independent' }}</td>
+            <td>{{ app.course }}</td>
+            <td class="election-name">{{ electionName(app.electionId) }}</td>
+            <td>
+              <span class="req-pill" [class.req-full]="reqCount(app.requirements) === 6">
+                {{ reqCount(app.requirements) }} / 6
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="appStatusClass(app.status)">
+                {{ app.status }}
+              </span>
+            </td>
+            <td>
+              <div class="action-btns" *ngIf="app.status === 'pending'">
+                <button class="btn-action btn-start" (click)="approveApplication(app)">
+                  ✅ Approve
+                </button>
+                <button class="btn-action btn-delete" (click)="rejectApplication(app)">
+                  ❌ Disqualify
+                </button>
+              </div>
+              <span *ngIf="app.status !== 'pending'" class="reviewed-label">
+                {{ app.status === 'approved' ? '✅ Approved' : '❌ Disqualified' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  TAB: APPROVED CANDIDATES                              -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="table-card" *ngIf="activeTab === 'candidates'">
+    <div class="table-header">
+      <h2>Approved Candidates</h2>
+      <span class="table-count">{{ candidates.length }} total</span>
+    </div>
+
+    <div class="loading-state" *ngIf="loadingCands">Loading candidates...</div>
+
+    <div class="empty-state" *ngIf="!loadingCands && candidates.length === 0">
+      <p>No approved candidates yet</p>
+      <span>Approve student applications to add candidates to the ballot</span>
+    </div>
+
+    <div class="table-wrapper" *ngIf="!loadingCands && candidates.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Candidate</th>
+            <th>Position</th>
+            <th>Party</th>
+            <th>Election</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of candidates">
+            <td class="name-cell">
+              <div class="cand-cell">
+                <div class="avatar-init" *ngIf="!c.photo">{{ initial(c.name) }}</div>
+                <img class="avatar-img" *ngIf="c.photo" [src]="c.photo" [alt]="c.name" />
+                <div>
+                  <div class="cand-name">{{ c.name }}</div>
+                  <div class="cand-meta" *ngIf="c.course">{{ c.course }} · {{ c.year }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <strong>{{ c.position }}</strong>
+            </td>
+            <td>{{ c.party || '—' }}</td>
+            <td class="election-name">
+              {{ electionName($any(c).electionId) }}
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="candStatusClass(c.status)">
+                {{ c.status || 'approved' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

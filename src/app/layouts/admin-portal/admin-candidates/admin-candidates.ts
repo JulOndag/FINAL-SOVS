@@ -1,68 +1,82 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { ElectionService, Election, Application, Candidate } from '../../../services/election';
+import { ElectionService, Application, Candidate, Election } from '../../../services/election';
 import { AuthService } from '../../../services/auth';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'admin-dashboard',
+  selector: 'app-admin-candidates',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './admin-dashboard.html',
-  styleUrls: ['./admin-dashboard.scss'],
+  imports: [CommonModule, FormsModule],
+  templateUrl: './admin-candidates.html',
+  styleUrls: ['./admin-candidates.scss'],
 })
-export class AdminDashboard implements OnInit {
-  elections: Election[] = [];
-  loading = false;
+export class AdminCandidates implements OnInit {
   applications: Application[] = [];
-  loadingApps = false;
+  candidates: Candidate[] = [];
+  elections: Election[] = [];
+  loadingApps = true;
+  loadingCands = true;
+
+  activeTab: 'applications' | 'candidates' = 'applications';
+  appFilter: 'all' | 'pending' | 'approved' | 'rejected' = 'pending';
 
   constructor(
     private svc: ElectionService,
     private auth: AuthService,
   ) {}
 
-  ngOnInit() {
-    this.loadElections();
+  ngOnInit(): void {
     this.loadApplications();
+    this.loadCandidates();
+    this.svc.getElections().subscribe((e) => (this.elections = e));
   }
 
-  // ── Load elections + AUTO-END past EndDate ────────────────
-  // ACID Consistency: election status always reflects reality
-  loadElections() {
-    this.loading = true;
-    this.svc.getElections().subscribe((elections) => {
-      this.elections = elections;
-
-      // Auto-end any active election whose EndDate has passed
-      const now = new Date();
-      elections.forEach((e) => {
-        if (e.status === 'active' && new Date(e.endDate) < now) {
-          this.svc.updateElection({ ...e, status: 'completed' }).subscribe();
-        }
-      });
-
-      this.loading = false;
-    });
-  }
-
-  loadApplications() {
+  loadApplications(): void {
     this.loadingApps = true;
     this.svc.getApplications().subscribe((apps) => {
-      this.applications = apps;
+      this.applications = apps.sort(
+        (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
+      );
       this.loadingApps = false;
     });
   }
 
-  // ── Approve application ───────────────────────────────────
-  // ACID Atomicity: application status + candidate record saved together
-  // ACID Consistency: electionId links candidate to correct ballot
-  approveApplication(app: Application) {
+  loadCandidates(): void {
+    this.loadingCands = true;
+    this.svc.getCandidates().subscribe((c) => {
+      this.candidates = c;
+      this.loadingCands = false;
+    });
+  }
+
+  get filteredApplications(): Application[] {
+    if (this.appFilter === 'all') return this.applications;
+    return this.applications.filter((a) => a.status === this.appFilter);
+  }
+
+  get pendingCount(): number {
+    return this.applications.filter((a) => a.status === 'pending').length;
+  }
+
+  electionName(id: string): string {
+    return this.elections.find((e) => e.id === id)?.name ?? '—';
+  }
+
+  reqCount(reqs: any): number {
+    if (!reqs) return 0;
+    return Object.values(reqs).filter(Boolean).length;
+  }
+
+  initial(name: string): string {
+    return name?.charAt(0)?.toUpperCase() ?? '?';
+  }
+
+  approveApplication(app: Application): void {
     Swal.fire({
       title: 'Approve candidate?',
-      text: `${app.name} for ${app.position}`,
+      html: `<b>${app.name}</b> for <b>${app.position}</b>`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#22c55e',
@@ -71,22 +85,23 @@ export class AdminDashboard implements OnInit {
       if (!r.isConfirmed) return;
 
       this.svc.updateApplication({ ...app, status: 'approved' }).subscribe(() => {
+        // ── Save to /candidates WITH electionId ───────────────
         this.svc
           .addCandidate({
             name: app.name,
             position: app.position,
-            party: app.party,
+            party: app.party || 'Independent',
             photo: app.photo || '',
             votes: 0,
             bio: app.bio || '',
             course: app.course,
             year: app.year,
             status: 'approved',
-            electionId: app.electionId, // ← links candidate to election ballot
+            electionId: app.electionId, // ← links to ballot
             requirements: app.requirements,
           } as any)
           .subscribe(() => {
-            // ── Notify student they were approved ───────────────
+            // ── Notify student ───────────────────────────────────
             this.svc
               .addNotification({
                 role: 'student',
@@ -101,9 +116,10 @@ export class AdminDashboard implements OnInit {
               .subscribe();
 
             this.loadApplications();
+            this.loadCandidates();
             Swal.fire({
               icon: 'success',
-              title: 'Candidate Approved!',
+              title: 'Approved!',
               text: `${app.name} is now on the ballot.`,
               timer: 1500,
               showConfirmButton: false,
@@ -113,11 +129,10 @@ export class AdminDashboard implements OnInit {
     });
   }
 
-  // ── Reject application ────────────────────────────────────
-  rejectApplication(app: Application) {
+  rejectApplication(app: Application): void {
     Swal.fire({
       title: 'Disqualify candidate?',
-      text: `${app.name} for ${app.position}`,
+      html: `<b>${app.name}</b> for <b>${app.position}</b>`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#ef4444',
@@ -126,7 +141,7 @@ export class AdminDashboard implements OnInit {
       if (!r.isConfirmed) return;
 
       this.svc.updateApplication({ ...app, status: 'rejected' }).subscribe(() => {
-        // ── Notify student they were disqualified ─────────────
+        // ── Notify student ─────────────────────────────────────
         this.svc
           .addNotification({
             role: 'student',
@@ -141,35 +156,20 @@ export class AdminDashboard implements OnInit {
           .subscribe();
 
         this.loadApplications();
-        Swal.fire({
-          icon: 'info',
-          title: 'Application Disqualified',
-          timer: 1000,
-          showConfirmButton: false,
-        });
+        Swal.fire({ icon: 'info', title: 'Disqualified', timer: 1000, showConfirmButton: false });
       });
     });
   }
 
-  // ── Getters ───────────────────────────────────────────────
-  get activeElection() {
-    return this.elections.find((e) => e.status === 'active') || null;
-  }
-  get upcomingElections() {
-    return this.elections.filter((e) => e.status === 'upcoming');
-  }
-  get completedElections() {
-    return this.elections.filter((e) => e.status === 'completed');
-  }
-  get pendingApplications() {
-    return this.applications.filter((a) => a.status === 'pending');
-  }
-
-  appStatusClass(s: string) {
+  appStatusClass(s?: string): string {
     return s === 'approved'
       ? 'status-active'
       : s === 'rejected'
         ? 'status-completed'
         : 'status-upcoming';
+  }
+
+  candStatusClass(s?: string): string {
+    return s === 'approved' ? 'status-active' : 'status-completed';
   }
 }
