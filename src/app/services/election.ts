@@ -17,6 +17,7 @@ import { map, switchMap } from 'rxjs/operators';
 
 // ── Interfaces ───────────────────────────────────────────────
 export interface Candidate {
+  electionId?: string;
   id: string;
   name: string;
   position: string;

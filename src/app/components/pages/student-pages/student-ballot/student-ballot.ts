@@ -47,14 +47,12 @@ export class StudentBallot implements OnInit {
       return;
     }
 
-    // load voter by user id
     if (user) {
       this.svc.getVoterByStudentId(user.id).subscribe((voters: Voter[]) => {
         this.voter = voters[0] ?? null;
       });
     }
 
-    // load specific election
     this.svc.getElectionById(electionId).subscribe((election) => {
       if (!election) {
         Swal.fire({ icon: 'error', title: 'Election not found.' });
@@ -78,12 +76,10 @@ export class StudentBallot implements OnInit {
     this.ballotLoading = true;
 
     this.svc.getCandidates().subscribe((candidates: Candidate[]) => {
-      // ✅ filter by approved + electionId
       const filtered = candidates.filter(
-        (c) => c.status === 'approved' && (c as any).electionId === electionId,
+        (c) => c.status === 'approved' && c.electionId === electionId,
       );
 
-      // fallback: if no electionId stored, show all approved
       const list =
         filtered.length > 0 ? filtered : candidates.filter((c) => c.status === 'approved');
 
